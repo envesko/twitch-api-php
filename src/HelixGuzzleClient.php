@@ -27,10 +27,10 @@ class HelixGuzzleClient
             'headers' => $headers,
         ];
 
-        if (isset($config['handler'])) {
-            $client_config = [];
-        }
-
+        // Anything the caller passes wins, so a custom handler is merged in alongside the
+        // base URI and Client-ID rather than replacing them. Discarding those whenever a
+        // handler was present left every consumer that wired in retry or logging middleware
+        // sending relative URLs with no Client-ID, which Twitch rejects.
         $client_config = array_merge($client_config, $config);
 
         $this->client = new Client($client_config);
