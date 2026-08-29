@@ -76,6 +76,49 @@ class RequestGeneratorTest extends TestCase
         );
     }
 
+    public function testAmpersandInAValueDoesNotStartANewParameter(): void
+    {
+        // Unencoded this reads as name=Rock, an empty parameter, then Roll.
+        $this->assertSame(
+            'games?name=Rock%20%26%20Roll',
+            $this->uri([['key' => 'name', 'value' => 'Rock & Roll']])
+        );
+    }
+
+    public function testPlusInAValueSurvives(): void
+    {
+        // Twitch pagination cursors are base64 and routinely contain + and =. Unencoded, the
+        // + is decoded back as a space and the cursor is rejected.
+        $this->assertSame(
+            'games?after=eyJiIjpudWxsL%2B8%3D',
+            $this->uri([['key' => 'after', 'value' => 'eyJiIjpudWxsL+8=']])
+        );
+    }
+
+    public function testHashInAValueDoesNotBecomeAFragment(): void
+    {
+        // Unencoded, everything after the # is dropped from the query entirely.
+        $this->assertSame(
+            'games?name=C%23%20tutorial',
+            $this->uri([['key' => 'name', 'value' => 'C# tutorial']])
+        );
+    }
+
+    public function testEqualsInAValueIsEncoded(): void
+    {
+        $this->assertSame('games?name=a%3Db', $this->uri([['key' => 'name', 'value' => 'a=b']]));
+    }
+
+    public function testAValueCannotInjectAdditionalParameters(): void
+    {
+        // Search terms are user input. Without encoding, a caller's user could append their
+        // own query parameters to the outgoing Twitch request.
+        $this->assertSame(
+            'games?name=x%26first%3D100%26after%3Devil',
+            $this->uri([['key' => 'name', 'value' => 'x&first=100&after=evil']])
+        );
+    }
+
     public function testNonAsciiIsEncoded(): void
     {
         $this->assertSame('games?name=caf%C3%A9', $this->uri([['key' => 'name', 'value' => 'café']]));
