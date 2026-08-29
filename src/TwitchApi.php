@@ -37,6 +37,12 @@ use TwitchApi\Webhooks\WebhooksSubscriptionApi;
 
 class TwitchApi
 {
+    private $helixGuzzleClient;
+    private $clientId;
+    private $clientSecret;
+    private $authGuzzleClient;
+    private $requestGenerator;
+
     private $oauthApi;
     private $adsApi;
     private $analyticsApi;
@@ -69,180 +75,159 @@ class TwitchApi
 
     public function __construct(HelixGuzzleClient $helixGuzzleClient, string $clientId, string $clientSecret, ?Client $authGuzzleClient = null)
     {
-        $requestGenerator = new RequestGenerator();
-        $this->oauthApi = new OauthApi($clientId, $clientSecret, $authGuzzleClient);
-        $this->adsApi = new AdsApi($helixGuzzleClient, $requestGenerator);
-        $this->analyticsApi = new AnalyticsApi($helixGuzzleClient, $requestGenerator);
-        $this->bitsApi = new BitsApi($helixGuzzleClient, $requestGenerator);
-        $this->channelPointsApi = new ChannelPointsApi($helixGuzzleClient, $requestGenerator);
-        $this->channelsApi = new ChannelsApi($helixGuzzleClient, $requestGenerator);
-        $this->charityApi = new CharityApi($helixGuzzleClient, $requestGenerator);
-        $this->chatApi = new ChatApi($helixGuzzleClient, $requestGenerator);
-        $this->clipsApi = new ClipsApi($helixGuzzleClient, $requestGenerator);
-        $this->entitlementsApi = new EntitlementsApi($helixGuzzleClient, $requestGenerator);
-        $this->eventSubApi = new EventSubApi($helixGuzzleClient, $requestGenerator);
-        $this->gamesApi = new GamesApi($helixGuzzleClient, $requestGenerator);
-        $this->goalsApi = new GoalsApi($helixGuzzleClient, $requestGenerator);
-        $this->hypeTrainApi = new HypeTrainApi($helixGuzzleClient, $requestGenerator);
-        $this->moderationApi = new ModerationApi($helixGuzzleClient, $requestGenerator);
-        $this->pollsApi = new PollsApi($helixGuzzleClient, $requestGenerator);
-        $this->predictionsApi = new PredictionsApi($helixGuzzleClient, $requestGenerator);
-        $this->raidsApi = new RaidsApi($helixGuzzleClient, $requestGenerator);
-        $this->scheduleApi = new ScheduleApi($helixGuzzleClient, $requestGenerator);
-        $this->searchApi = new SearchApi($helixGuzzleClient, $requestGenerator);
-        $this->streamsApi = new StreamsApi($helixGuzzleClient, $requestGenerator);
-        $this->subscriptionsApi = new SubscriptionsApi($helixGuzzleClient, $requestGenerator);
-        $this->tagsApi = new TagsApi($helixGuzzleClient, $requestGenerator);
-        $this->teamsApi = new TeamsApi($helixGuzzleClient, $requestGenerator);
-        $this->usersApi = new UsersApi($helixGuzzleClient, $requestGenerator);
-        $this->videosApi = new VideosApi($helixGuzzleClient, $requestGenerator);
-        $this->webhooksApi = new WebhooksApi($helixGuzzleClient, $requestGenerator);
-        $this->whispersApi = new WhispersApi($helixGuzzleClient, $requestGenerator);
-        $this->webhooksSubscriptionApi = new WebhooksSubscriptionApi($clientId, $clientSecret, $helixGuzzleClient);
+        $this->helixGuzzleClient = $helixGuzzleClient;
+        $this->clientId = $clientId;
+        $this->clientSecret = $clientSecret;
+        $this->authGuzzleClient = $authGuzzleClient;
+    }
+
+    private function requestGenerator(): RequestGenerator
+    {
+        return $this->requestGenerator ??= new RequestGenerator();
     }
 
     public function getOauthApi(): OauthApi
     {
-        return $this->oauthApi;
+        return $this->oauthApi ??= new OauthApi($this->clientId, $this->clientSecret, $this->authGuzzleClient);
     }
 
     public function getAdsApi(): AdsApi
     {
-        return $this->adsApi;
+        return $this->adsApi ??= new AdsApi($this->helixGuzzleClient, $this->requestGenerator());
     }
 
     public function getAnalyticsApi(): AnalyticsApi
     {
-        return $this->analyticsApi;
+        return $this->analyticsApi ??= new AnalyticsApi($this->helixGuzzleClient, $this->requestGenerator());
     }
 
     public function getBitsApi(): BitsApi
     {
-        return $this->bitsApi;
+        return $this->bitsApi ??= new BitsApi($this->helixGuzzleClient, $this->requestGenerator());
     }
 
     public function getChannelPointsApi(): ChannelPointsApi
     {
-        return $this->channelPointsApi;
+        return $this->channelPointsApi ??= new ChannelPointsApi($this->helixGuzzleClient, $this->requestGenerator());
     }
 
     public function getChannelsApi(): ChannelsApi
     {
-        return $this->channelsApi;
+        return $this->channelsApi ??= new ChannelsApi($this->helixGuzzleClient, $this->requestGenerator());
     }
 
     public function getCharityApi(): CharityApi
     {
-        return $this->charityApi;
+        return $this->charityApi ??= new CharityApi($this->helixGuzzleClient, $this->requestGenerator());
     }
 
     public function getChatApi(): ChatApi
     {
-        return $this->chatApi;
+        return $this->chatApi ??= new ChatApi($this->helixGuzzleClient, $this->requestGenerator());
     }
 
     public function getClipsApi(): ClipsApi
     {
-        return $this->clipsApi;
+        return $this->clipsApi ??= new ClipsApi($this->helixGuzzleClient, $this->requestGenerator());
     }
 
     public function getEntitlementsApi(): EntitlementsApi
     {
-        return $this->entitlementsApi;
+        return $this->entitlementsApi ??= new EntitlementsApi($this->helixGuzzleClient, $this->requestGenerator());
     }
 
     public function getEventSubApi(): EventSubApi
     {
-        return $this->eventSubApi;
+        return $this->eventSubApi ??= new EventSubApi($this->helixGuzzleClient, $this->requestGenerator());
     }
 
     public function getGamesApi(): GamesApi
     {
-        return $this->gamesApi;
+        return $this->gamesApi ??= new GamesApi($this->helixGuzzleClient, $this->requestGenerator());
     }
 
     public function getGoalsApi(): GoalsApi
     {
-        return $this->goalsApi;
+        return $this->goalsApi ??= new GoalsApi($this->helixGuzzleClient, $this->requestGenerator());
     }
 
     public function getHypeTrainApi(): HypeTrainApi
     {
-        return $this->hypeTrainApi;
+        return $this->hypeTrainApi ??= new HypeTrainApi($this->helixGuzzleClient, $this->requestGenerator());
     }
 
     public function getModerationApi(): ModerationApi
     {
-        return $this->moderationApi;
+        return $this->moderationApi ??= new ModerationApi($this->helixGuzzleClient, $this->requestGenerator());
     }
 
     public function getPollsApi(): PollsApi
     {
-        return $this->pollsApi;
+        return $this->pollsApi ??= new PollsApi($this->helixGuzzleClient, $this->requestGenerator());
     }
 
     public function getPredictionsApi(): PredictionsApi
     {
-        return $this->predictionsApi;
+        return $this->predictionsApi ??= new PredictionsApi($this->helixGuzzleClient, $this->requestGenerator());
     }
 
     public function getRaidsApi(): RaidsApi
     {
-        return $this->raidsApi;
+        return $this->raidsApi ??= new RaidsApi($this->helixGuzzleClient, $this->requestGenerator());
     }
 
     public function getScheduleApi(): ScheduleApi
     {
-        return $this->scheduleApi;
+        return $this->scheduleApi ??= new ScheduleApi($this->helixGuzzleClient, $this->requestGenerator());
     }
 
     public function getSearchApi(): SearchApi
     {
-        return $this->searchApi;
+        return $this->searchApi ??= new SearchApi($this->helixGuzzleClient, $this->requestGenerator());
     }
 
     public function getStreamsApi(): StreamsApi
     {
-        return $this->streamsApi;
+        return $this->streamsApi ??= new StreamsApi($this->helixGuzzleClient, $this->requestGenerator());
     }
 
     public function getSubscriptionsApi(): SubscriptionsApi
     {
-        return $this->subscriptionsApi;
+        return $this->subscriptionsApi ??= new SubscriptionsApi($this->helixGuzzleClient, $this->requestGenerator());
     }
 
     public function getTagsApi(): TagsApi
     {
-        return $this->tagsApi;
+        return $this->tagsApi ??= new TagsApi($this->helixGuzzleClient, $this->requestGenerator());
     }
 
     public function getTeamsApi(): TeamsApi
     {
-        return $this->teamsApi;
+        return $this->teamsApi ??= new TeamsApi($this->helixGuzzleClient, $this->requestGenerator());
     }
 
     public function getUsersApi(): UsersApi
     {
-        return $this->usersApi;
+        return $this->usersApi ??= new UsersApi($this->helixGuzzleClient, $this->requestGenerator());
     }
 
     public function getVideosApi(): VideosApi
     {
-        return $this->videosApi;
+        return $this->videosApi ??= new VideosApi($this->helixGuzzleClient, $this->requestGenerator());
     }
 
     public function getWebhooksApi(): WebhooksApi
     {
-        return $this->webhooksApi;
+        return $this->webhooksApi ??= new WebhooksApi($this->helixGuzzleClient, $this->requestGenerator());
     }
 
     public function getWhispersApi(): WhispersApi
     {
-        return $this->whispersApi;
+        return $this->whispersApi ??= new WhispersApi($this->helixGuzzleClient, $this->requestGenerator());
     }
 
     public function getWebhooksSubscriptionApi(): WebhooksSubscriptionApi
     {
-        return $this->webhooksSubscriptionApi;
+        return $this->webhooksSubscriptionApi ??= new WebhooksSubscriptionApi($this->clientId, $this->clientSecret, $this->helixGuzzleClient);
     }
 }
