@@ -1,6 +1,6 @@
 .SILENT: ;
 
-test: cs-check test-phpunit test-phpspec
+test: cs-check check-deprecations test-phpunit test-phpspec
 
 cs-check:
 	vendor/bin/php-cs-fixer fix --diff --dry-run
@@ -10,3 +10,6 @@ test-phpunit:
 
 test-phpspec:
 	vendor/bin/phpspec run
+
+check-deprecations:
+	php bin/check-deprecations.php
