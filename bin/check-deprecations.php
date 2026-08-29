@@ -129,12 +129,17 @@ if ($baseline !== []) {
 }
 
 if ($fixed !== []) {
-    printf("\n%d baselined diagnostic(s) no longer occur. Remove them from the baseline:\n\n", count($fixed));
+    // Not a failure. The set of diagnostics a given PHP emits varies by version, so an entry
+    // that is absent here may simply belong to a version this run is not on. "Required
+    // parameter follows optional", for instance, does not exist before 8.0, so every entry
+    // would look resolved on the 7.4 job. Failing on that would make the build red on the
+    // oldest supported version for no reason.
+    printf("\n%d baselined diagnostic(s) did not occur on this PHP version:\n\n", count($fixed));
     foreach ($fixed as $diagnostic) {
         echo '  ' . $diagnostic . "\n";
     }
-    echo "\nRun: php bin/check-deprecations.php --update-baseline\n";
-    exit(1);
+    echo "\nIf they are genuinely fixed on every supported version, refresh the baseline with:\n";
+    echo "  php bin/check-deprecations.php --update-baseline\n";
 }
 
 if ($new === []) {
