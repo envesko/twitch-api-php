@@ -7,7 +7,7 @@ use Psr\Http\Message\RequestInterface;
 
 class RequestGenerator
 {
-    public function generate(string $httpMethod, string $uriEndpoint, string $bearer = null, array $queryParamsMap = [], array $bodyParams = []): RequestInterface
+    public function generate(string $httpMethod, string $uriEndpoint, ?string $bearer = null, array $queryParamsMap = [], array $bodyParams = []): RequestInterface
     {
         $headers = [
           'Accept' => 'application/json',

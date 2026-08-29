@@ -11,7 +11,7 @@ class HelixGuzzleClient
     private $client;
     private const BASE_URI = 'https://api.twitch.tv/helix/';
 
-    public function __construct(string $clientId, array $config = [], string $baseUri = null)
+    public function __construct(string $clientId, array $config = [], ?string $baseUri = null)
     {
         if ($baseUri == null) {
             $baseUri = self::BASE_URI;

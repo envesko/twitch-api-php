@@ -15,7 +15,7 @@ class WebhooksSubscriptionApi
     private $secret;
     private $guzzleClient;
 
-    public function __construct(string $clientId, string $secret, HelixGuzzleClient $guzzleClient = null)
+    public function __construct(string $clientId, string $secret, ?HelixGuzzleClient $guzzleClient = null)
     {
         $this->clientId = $clientId;
         $this->secret = $secret;

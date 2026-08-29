@@ -13,7 +13,7 @@ class HypeTrainApi extends AbstractResource
      * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference#get-hype-train-events
      */
-    public function getHypeTrainEvents(string $bearer, string $broadcasterId, int $first = null, string $cursor = null): ResponseInterface
+    public function getHypeTrainEvents(string $bearer, string $broadcasterId, ?int $first = null, ?string $cursor = null): ResponseInterface
     {
         $queryParamsMap = [];
 

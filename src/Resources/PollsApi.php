@@ -13,7 +13,7 @@ class PollsApi extends AbstractResource
      * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference#get-polls
      */
-    public function getPolls(string $bearer, string $broadcasterId, array $ids = [], string $after = null, int $first = null): ResponseInterface
+    public function getPolls(string $bearer, string $broadcasterId, array $ids = [], ?string $after = null, ?int $first = null): ResponseInterface
     {
         $queryParamsMap = [];
 

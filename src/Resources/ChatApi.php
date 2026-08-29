@@ -78,7 +78,7 @@ class ChatApi extends AbstractResource
      * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference#get-chat-settings
      */
-    public function getChatSettings(string $bearer, string $broadcasterId, string $moderatorId = null): ResponseInterface
+    public function getChatSettings(string $bearer, string $broadcasterId, ?string $moderatorId = null): ResponseInterface
     {
         $queryParamsMap = [];
         $queryParamsMap[] = ['key' => 'broadcaster_id', 'value' => $broadcasterId];
@@ -112,7 +112,7 @@ class ChatApi extends AbstractResource
      * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference#send-chat-announcement
      */
-    public function sendChatAnnouncement(string $bearer, string $broadcasterId, string $moderatorId, string $message, string $color = null): ResponseInterface
+    public function sendChatAnnouncement(string $bearer, string $broadcasterId, string $moderatorId, string $message, ?string $color = null): ResponseInterface
     {
         $queryParamsMap = $bodyParamsMap = [];
 
@@ -161,7 +161,7 @@ class ChatApi extends AbstractResource
      * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference#get-chatters
      */
-    public function getChatters(string $bearer, string $broadcasterId, string $moderatorId, int $first = null, string $after = null): ResponseInterface
+    public function getChatters(string $bearer, string $broadcasterId, string $moderatorId, ?int $first = null, ?string $after = null): ResponseInterface
     {
         $queryParamsMap = [];
 

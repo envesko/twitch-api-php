@@ -13,7 +13,7 @@ class EventSubApi extends AbstractResource
      * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference#get-eventsub-subscriptions
      */
-    public function getEventSubSubscription(string $bearer, string $status = null, string $type = null, string $after = null, string $userId = null): ResponseInterface
+    public function getEventSubSubscription(string $bearer, ?string $status = null, ?string $type = null, ?string $after = null, ?string $userId = null): ResponseInterface
     {
         $queryParamsMap = [];
 
@@ -40,7 +40,7 @@ class EventSubApi extends AbstractResource
      * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference#create-eventsub-subscription
      */
-    public function createEventSubSubscription(string $bearer, string $secret, string $callback, string $type, string $version, array $condition, bool $isBatchingEnabled = null): ResponseInterface
+    public function createEventSubSubscription(string $bearer, string $secret, string $callback, string $type, string $version, array $condition, ?bool $isBatchingEnabled = null): ResponseInterface
     {
         $bodyParams = [];
 
@@ -255,7 +255,7 @@ class EventSubApi extends AbstractResource
     /**
      * @link https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types#channelchannel_points_custom_rewardupdate
      */
-    public function subscribeToChannelPointsCustomRewardUpdate(string $bearer, string $secret, string $callback, string $twitchId, string $rewardId = null): ResponseInterface
+    public function subscribeToChannelPointsCustomRewardUpdate(string $bearer, string $secret, string $callback, string $twitchId, ?string $rewardId = null): ResponseInterface
     {
         return $this->subscribeToChannelPointsCustomReward($bearer, $secret, $callback, $twitchId, $rewardId, 'update');
     }
@@ -263,7 +263,7 @@ class EventSubApi extends AbstractResource
     /**
      * @link https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types#channelchannel_points_custom_rewardremove
      */
-    public function subscribeToChannelPointsCustomRewardRemove(string $bearer, string $secret, string $callback, string $twitchId, string $rewardId = null): ResponseInterface
+    public function subscribeToChannelPointsCustomRewardRemove(string $bearer, string $secret, string $callback, string $twitchId, ?string $rewardId = null): ResponseInterface
     {
         return $this->subscribeToChannelPointsCustomReward($bearer, $secret, $callback, $twitchId, $rewardId, 'remove');
     }
@@ -279,7 +279,7 @@ class EventSubApi extends AbstractResource
     /**
      * @link https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types#channelchannel_points_custom_reward_redemptionupdate
      */
-    public function subscribeToChannelPointsCustomRewardRedemptionUpdate(string $bearer, string $secret, string $callback, string $twitchId, string $rewardId = null): ResponseInterface
+    public function subscribeToChannelPointsCustomRewardRedemptionUpdate(string $bearer, string $secret, string $callback, string $twitchId, ?string $rewardId = null): ResponseInterface
     {
         return $this->subscribeToChannelPointsCustomRewardRedemption($bearer, $secret, $callback, $twitchId, $rewardId, 'update');
     }
@@ -517,7 +517,7 @@ class EventSubApi extends AbstractResource
     /**
      * @link https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#dropentitlementgrant
      */
-    public function subscribeToDropEntitlementGrant(string $bearer, string $secret, string $callback, string $organizationId, string $categoryId = null, string $campaign_id = null): ResponseInterface
+    public function subscribeToDropEntitlementGrant(string $bearer, string $secret, string $callback, string $organizationId, ?string $categoryId = null, ?string $campaign_id = null): ResponseInterface
     {
         $condition = ['organization_id' => $organizationId];
         if ($categoryId) {
@@ -561,7 +561,7 @@ class EventSubApi extends AbstractResource
         );
     }
 
-    private function subscribeToChannelPointsCustomReward(string $bearer, string $secret, string $callback, string $twitchId, string $rewardId = null, string $eventType): ResponseInterface
+    private function subscribeToChannelPointsCustomReward(string $bearer, string $secret, string $callback, string $twitchId, ?string $rewardId = null, string $eventType): ResponseInterface
     {
         $condition = ['broadcaster_user_id' => $twitchId];
 
@@ -579,7 +579,7 @@ class EventSubApi extends AbstractResource
         );
     }
 
-    private function subscribeToChannelPointsCustomRewardRedemption(string $bearer, string $secret, string $callback, string $twitchId, string $rewardId = null, string $eventType): ResponseInterface
+    private function subscribeToChannelPointsCustomRewardRedemption(string $bearer, string $secret, string $callback, string $twitchId, ?string $rewardId = null, string $eventType): ResponseInterface
     {
         $condition = ['broadcaster_user_id' => $twitchId];
 

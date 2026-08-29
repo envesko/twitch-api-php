@@ -28,7 +28,7 @@ class StreamsApi extends AbstractResource
     /**
      * @throws GuzzleException
      */
-    public function getStreamsByGameId(string $bearer, string $gameId, int $first = null, string $before = null, string $after = null): ResponseInterface
+    public function getStreamsByGameId(string $bearer, string $gameId, ?int $first = null, ?string $before = null, ?string $after = null): ResponseInterface
     {
         return $this->getStreams($bearer, [], [], [$gameId]);
     }
@@ -36,7 +36,7 @@ class StreamsApi extends AbstractResource
     /**
      * @throws GuzzleException
      */
-    public function getStreamsByLanguage(string $bearer, string $language, int $first = null, string $before = null, string $after = null): ResponseInterface
+    public function getStreamsByLanguage(string $bearer, string $language, ?int $first = null, ?string $before = null, ?string $after = null): ResponseInterface
     {
         return $this->getStreams($bearer, [], [], [], [$language]);
     }
@@ -58,7 +58,7 @@ class StreamsApi extends AbstractResource
      * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference/#get-streams
      */
-    public function getStreams(string $bearer, array $userIds = [], array $usernames = [], array $gameIds = [], array $languages = [], int $first = null, string $before = null, string $after = null): ResponseInterface
+    public function getStreams(string $bearer, array $userIds = [], array $usernames = [], array $gameIds = [], array $languages = [], ?int $first = null, ?string $before = null, ?string $after = null): ResponseInterface
     {
         $queryParamsMap = [];
         foreach ($userIds as $id) {
@@ -90,7 +90,7 @@ class StreamsApi extends AbstractResource
      * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference/#get-stream-markers
      */
-    public function getStreamMarkers(string $bearer, string $userId = null, string $videoId = null, string $first = null, string $before = null, string $after = null): ResponseInterface
+    public function getStreamMarkers(string $bearer, ?string $userId = null, ?string $videoId = null, ?string $first = null, ?string $before = null, ?string $after = null): ResponseInterface
     {
         $queryParamsMap = [];
 
@@ -121,7 +121,7 @@ class StreamsApi extends AbstractResource
      * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference/#get-followed-streams
      */
-    public function getFollowedStreams(string $bearer, string $userId, int $first = null, string $after = null): ResponseInterface
+    public function getFollowedStreams(string $bearer, string $userId, ?int $first = null, ?string $after = null): ResponseInterface
     {
         $queryParamsMap = [];
 
@@ -142,7 +142,7 @@ class StreamsApi extends AbstractResource
      * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference#create-stream-marker
      */
-    public function createStreamMarker(string $bearer, string $userId, string $description = null): ResponseInterface
+    public function createStreamMarker(string $bearer, string $userId, ?string $description = null): ResponseInterface
     {
         $bodyParamsMap = [];
 

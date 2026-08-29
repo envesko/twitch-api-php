@@ -26,7 +26,7 @@ class TeamsApi extends AbstractResource
      * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference#get-teams
      */
-    public function getTeams(string $bearer, string $name = null, string $id = null): ResponseInterface
+    public function getTeams(string $bearer, ?string $name = null, ?string $id = null): ResponseInterface
     {
         $queryParamsMap = [];
 

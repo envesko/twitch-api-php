@@ -13,7 +13,7 @@ class TagsApi extends AbstractResource
      * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference#get-all-stream-tags
      */
-    public function getAllStreamTags(string $bearer, array $tagIds = [], int $first = null, string $after = null): ResponseInterface
+    public function getAllStreamTags(string $bearer, array $tagIds = [], ?int $first = null, ?string $after = null): ResponseInterface
     {
         $queryParamsMap = [];
 

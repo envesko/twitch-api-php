@@ -13,7 +13,7 @@ class ModerationApi extends AbstractResource
      * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference/#get-banned-users
      */
-    public function getBannedUsers(string $bearer, string $broadcasterId, array $ids = [], string $before = null, string $after = null, string $first = null): ResponseInterface
+    public function getBannedUsers(string $bearer, string $broadcasterId, array $ids = [], ?string $before = null, ?string $after = null, ?string $first = null): ResponseInterface
     {
         $queryParamsMap = [];
 
@@ -42,7 +42,7 @@ class ModerationApi extends AbstractResource
      * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference/#get-moderators
      */
-    public function getModerators(string $bearer, string $broadcasterId, array $ids = [], string $after = null, string $first = null): ResponseInterface
+    public function getModerators(string $bearer, string $broadcasterId, array $ids = [], ?string $after = null, ?string $first = null): ResponseInterface
     {
         $queryParamsMap = [];
 
@@ -124,7 +124,7 @@ class ModerationApi extends AbstractResource
      * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference#ban-user
      */
-    public function banUser(string $bearer, string $broadcasterId, string $moderatorId, string $userId, string $reason, int $duration = null): ResponseInterface
+    public function banUser(string $bearer, string $broadcasterId, string $moderatorId, string $userId, string $reason, ?int $duration = null): ResponseInterface
     {
         $queryParamsMap = $bodyParamsMap = [];
 
@@ -191,7 +191,7 @@ class ModerationApi extends AbstractResource
      * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference#get-blocked-terms
      */
-    public function getBlockedTerms(string $bearer, string $broadcasterId, string $moderatorId, int $first = null, string $after = null): ResponseInterface
+    public function getBlockedTerms(string $bearer, string $broadcasterId, string $moderatorId, ?int $first = null, ?string $after = null): ResponseInterface
     {
         $queryParamsMap = [];
         $queryParamsMap[] = ['key' => 'broadcaster_id', 'value' => $broadcasterId];
@@ -242,7 +242,7 @@ class ModerationApi extends AbstractResource
      * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference#delete-chat-messages
      */
-    public function deleteChatMessages(string $bearer, string $broadcasterId, string $moderatorId, string $messageId = null): ResponseInterface
+    public function deleteChatMessages(string $bearer, string $broadcasterId, string $moderatorId, ?string $messageId = null): ResponseInterface
     {
         $queryParamsMap = [];
         $queryParamsMap[] = ['key' => 'broadcaster_id', 'value' => $broadcasterId];
@@ -259,7 +259,7 @@ class ModerationApi extends AbstractResource
      * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference#get-vips
      */
-    public function getVips(string $bearer, string $broadcasterId, array $users = [], int $first = null, string $after = null): ResponseInterface
+    public function getVips(string $bearer, string $broadcasterId, array $users = [], ?int $first = null, ?string $after = null): ResponseInterface
     {
         $queryParamsMap = [];
         $queryParamsMap[] = ['key' => 'broadcaster_id', 'value' => $broadcasterId];

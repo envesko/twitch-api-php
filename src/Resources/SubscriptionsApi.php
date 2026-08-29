@@ -13,7 +13,7 @@ class SubscriptionsApi extends AbstractResource
      * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference/#get-broadcaster-subscriptions
      */
-    public function getBroadcasterSubscriptions(string $bearer, string $broadcasterId, int $first = null, string $after = null): ResponseInterface
+    public function getBroadcasterSubscriptions(string $bearer, string $broadcasterId, ?int $first = null, ?string $after = null): ResponseInterface
     {
         $queryParamsMap = [];
 
