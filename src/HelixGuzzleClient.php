@@ -18,8 +18,8 @@ class HelixGuzzleClient
         }
 
         $headers = [
-          'Client-ID' => $clientId,
-          'Content-Type' => 'application/json',
+            'Client-ID' => $clientId,
+            'Content-Type' => 'application/json',
         ];
 
         $client_config = [
