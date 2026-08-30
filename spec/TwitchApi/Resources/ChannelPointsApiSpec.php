@@ -117,4 +117,10 @@ class ChannelPointsApiSpec extends ObjectBehavior
         $requestGenerator->generate('PATCH', 'channel_points/custom_rewards/redemptions', 'TEST_TOKEN', [['key' => 'broadcaster_id', 'value' => '123'], ['key' => 'reward_id', 'value' => '456'], ['key' => 'id', 'value' => '789']], [['key' => 'status', 'value' => 'FULFILLED']])->willReturn($request);
         $this->updateRedemptionStatus('TEST_TOKEN', '123', '456', '789', 'FULFILLED')->shouldBe($response);
     }
+
+    function it_should_get_a_custom_reward_by_id(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $requestGenerator->generate('GET', 'channel_points/custom_rewards', 'TEST_TOKEN', [['key' => 'broadcaster_id', 'value' => '123'], ['key' => 'id', 'value' => 'reward']], [])->willReturn($request);
+        $this->getCustomRewardById('TEST_TOKEN', '123', 'reward')->shouldBe($response);
+    }
 }

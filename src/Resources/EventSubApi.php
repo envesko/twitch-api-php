@@ -536,10 +536,24 @@ class EventSubApi extends AbstractResource
      */
     public function verifySignature(string $signature, string $secret, string $messageId, string $timestamp, string $body): bool
     {
-        [$hashAlgorithm, $expectedHash] = explode('=', $signature);
+        // Twitch sends "sha256=<hex>". A header that is absent, truncated or malformed used to
+        // reach explode() and leave the second element undefined, raising a warning. Under an
+        // error handler that promotes warnings to exceptions, which is the common production
+        // setup, an unauthenticated request could take the webhook handler down.
+        if (strpos($signature, '=') === false) {
+            return false;
+        }
+
+        [$hashAlgorithm, $expectedHash] = explode('=', $signature, 2);
+
+        if (!in_array($hashAlgorithm, hash_algos(), true)) {
+            return false;
+        }
+
         $generatedHash = hash_hmac($hashAlgorithm, $messageId.$timestamp.$body, $secret);
 
-        return $expectedHash === $generatedHash;
+        // Constant-time, so comparing a forged signature does not leak how much of it matched.
+        return hash_equals($generatedHash, $expectedHash);
     }
 
     private function subscribeToChannelModerator(string $bearer, string $secret, string $callback, string $twitchId, string $eventType): ResponseInterface

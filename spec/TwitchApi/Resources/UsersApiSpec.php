@@ -148,4 +148,22 @@ class UsersApiSpec extends ObjectBehavior
         $requestGenerator->generate('GET', 'authorization/users', 'TEST_TOKEN', [['key' => 'user_id', 'value' => '456']], [])->willReturn($request);
         $this->getAuthorizationByUser('TEST_TOKEN', '456')->shouldBe($response);
     }
+
+    function it_should_get_user_extensions(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $requestGenerator->generate('GET', 'users/extensions/list', 'TEST_TOKEN', [], [])->willReturn($request);
+        $this->getUserExtensions('TEST_TOKEN')->shouldBe($response);
+    }
+
+    function it_should_get_active_user_extensions(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $requestGenerator->generate('GET', 'users/extensions', 'TEST_TOKEN', [], [])->willReturn($request);
+        $this->getActiveUserExtensions('TEST_TOKEN')->shouldBe($response);
+    }
+
+    function it_should_get_active_user_extensions_for_another_user(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $requestGenerator->generate('GET', 'users/extensions', 'TEST_TOKEN', [['key' => 'user_id', 'value' => '456']], [])->willReturn($request);
+        $this->getActiveUserExtensions('TEST_TOKEN', '456')->shouldBe($response);
+    }
 }
