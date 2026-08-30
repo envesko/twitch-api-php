@@ -14,10 +14,14 @@ use TwitchApi\Resources\ChannelsApi;
 use TwitchApi\Resources\CharityApi;
 use TwitchApi\Resources\ChatApi;
 use TwitchApi\Resources\ClipsApi;
+use TwitchApi\Resources\ConduitsApi;
+use TwitchApi\Resources\ContentClassificationLabelsApi;
 use TwitchApi\Resources\EntitlementsApi;
 use TwitchApi\Resources\EventSubApi;
+use TwitchApi\Resources\ExtensionsApi;
 use TwitchApi\Resources\GamesApi;
 use TwitchApi\Resources\GoalsApi;
+use TwitchApi\Resources\GuestStarApi;
 use TwitchApi\Resources\HypeTrainApi;
 use TwitchApi\Resources\ModerationApi;
 use TwitchApi\Resources\PollsApi;
@@ -25,6 +29,7 @@ use TwitchApi\Resources\PredictionsApi;
 use TwitchApi\Resources\RaidsApi;
 use TwitchApi\Resources\ScheduleApi;
 use TwitchApi\Resources\SearchApi;
+use TwitchApi\Resources\SharedChatApi;
 use TwitchApi\Resources\StreamsApi;
 use TwitchApi\Resources\SubscriptionsApi;
 use TwitchApi\Resources\TagsApi;
@@ -72,6 +77,11 @@ class TwitchApi
     private $webhooksApi;
     private $whispersApi;
     private $webhooksSubscriptionApi;
+    private $conduitsApi;
+    private $contentClassificationLabelsApi;
+    private $extensionsApi;
+    private $guestStarApi;
+    private $sharedChatApi;
 
     public function __construct(HelixGuzzleClient $helixGuzzleClient, string $clientId, string $clientSecret, ?Client $authGuzzleClient = null)
     {
@@ -229,5 +239,30 @@ class TwitchApi
     public function getWebhooksSubscriptionApi(): WebhooksSubscriptionApi
     {
         return $this->webhooksSubscriptionApi ??= new WebhooksSubscriptionApi($this->clientId, $this->clientSecret, $this->helixGuzzleClient);
+    }
+
+    public function getConduitsApi(): ConduitsApi
+    {
+        return $this->conduitsApi ??= new ConduitsApi($this->helixGuzzleClient, $this->requestGenerator());
+    }
+
+    public function getContentClassificationLabelsApi(): ContentClassificationLabelsApi
+    {
+        return $this->contentClassificationLabelsApi ??= new ContentClassificationLabelsApi($this->helixGuzzleClient, $this->requestGenerator());
+    }
+
+    public function getExtensionsApi(): ExtensionsApi
+    {
+        return $this->extensionsApi ??= new ExtensionsApi($this->helixGuzzleClient, $this->requestGenerator());
+    }
+
+    public function getGuestStarApi(): GuestStarApi
+    {
+        return $this->guestStarApi ??= new GuestStarApi($this->helixGuzzleClient, $this->requestGenerator());
+    }
+
+    public function getSharedChatApi(): SharedChatApi
+    {
+        return $this->sharedChatApi ??= new SharedChatApi($this->helixGuzzleClient, $this->requestGenerator());
     }
 }
