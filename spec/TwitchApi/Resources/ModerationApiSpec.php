@@ -219,4 +219,22 @@ class ModerationApiSpec extends ObjectBehavior
         $requestGenerator->generate('DELETE', 'moderation/suspicious_users', 'TEST_TOKEN', [['key' => 'broadcaster_id', 'value' => '123'], ['key' => 'moderator_id', 'value' => '456'], ['key' => 'user_id', 'value' => '789']], [])->willReturn($request);
         $this->removeSuspiciousUser('TEST_TOKEN', '123', '456', '789')->shouldBe($response);
     }
+
+    function it_should_get_moderated_channels_with_paging(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $requestGenerator->generate('GET', 'moderation/channels', 'TEST_TOKEN', [['key' => 'user_id', 'value' => '456'], ['key' => 'first', 'value' => 20], ['key' => 'after', 'value' => 'cursor']], [])->willReturn($request);
+        $this->getModeratedChannels('TEST_TOKEN', '456', 20, 'cursor')->shouldBe($response);
+    }
+
+    function it_should_get_unban_requests_for_one_user_with_paging(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $requestGenerator->generate('GET', 'moderation/unban_requests', 'TEST_TOKEN', [['key' => 'broadcaster_id', 'value' => '123'], ['key' => 'moderator_id', 'value' => '456'], ['key' => 'status', 'value' => 'pending'], ['key' => 'user_id', 'value' => '789'], ['key' => 'after', 'value' => 'cursor'], ['key' => 'first', 'value' => 20]], [])->willReturn($request);
+        $this->getUnbanRequests('TEST_TOKEN', '123', '456', 'pending', '789', 'cursor', 20)->shouldBe($response);
+    }
+
+    function it_should_resolve_an_unban_request_with_resolution_text(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $requestGenerator->generate('PATCH', 'moderation/unban_requests', 'TEST_TOKEN', [['key' => 'broadcaster_id', 'value' => '123'], ['key' => 'moderator_id', 'value' => '456'], ['key' => 'unban_request_id', 'value' => 'req'], ['key' => 'status', 'value' => 'denied'], ['key' => 'resolution_text', 'value' => 'no']], [])->willReturn($request);
+        $this->resolveUnbanRequest('TEST_TOKEN', '123', '456', 'req', 'denied', 'no')->shouldBe($response);
+    }
 }

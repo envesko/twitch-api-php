@@ -166,4 +166,10 @@ class UsersApiSpec extends ObjectBehavior
         $requestGenerator->generate('GET', 'users/extensions', 'TEST_TOKEN', [['key' => 'user_id', 'value' => '456']], [])->willReturn($request);
         $this->getActiveUserExtensions('TEST_TOKEN', '456')->shouldBe($response);
     }
+
+    function it_should_get_users_including_email(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $requestGenerator->generate('GET', 'users', 'TEST_TOKEN', [['key' => 'id', 'value' => '123'], ['key' => 'scope', 'value' => 'user:read:email']], [])->willReturn($request);
+        $this->getUsers('TEST_TOKEN', ['123'], [], true)->shouldBe($response);
+    }
 }

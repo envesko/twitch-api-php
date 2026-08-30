@@ -601,4 +601,16 @@ class EventSubApiSpec extends ObjectBehavior
         $requestGenerator->generate('POST', 'eventsub/subscriptions', $this->bearer, [], $bodyParams)->willReturn($request);
         $this->createEventSubSubscriptionViaConduit($this->bearer, 'CONDUIT', 'drop.entitlement.grant', '1', ['organization_id' => 'ORG'], true)->shouldBe($response);
     }
+
+    function it_should_subscribe_to_a_single_custom_reward(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $this->createEventSubSubscription('channel.channel_points_custom_reward.update', '1', ['broadcaster_user_id' => '12345', 'reward_id' => 'REWARD'], $requestGenerator)->willReturn($request);
+        $this->subscribeToChannelPointsCustomRewardUpdate($this->bearer, $this->secret, $this->callback, '12345', 'REWARD')->shouldBe($response);
+    }
+
+    function it_should_subscribe_to_a_single_custom_reward_redemption(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $this->createEventSubSubscription('channel.channel_points_custom_reward_redemption.update', '1', ['broadcaster_user_id' => '12345', 'reward_id' => 'REWARD'], $requestGenerator)->willReturn($request);
+        $this->subscribeToChannelPointsCustomRewardRedemptionUpdate($this->bearer, $this->secret, $this->callback, '12345', 'REWARD')->shouldBe($response);
+    }
 }

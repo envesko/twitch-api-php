@@ -165,4 +165,16 @@ class ChatApiSpec extends ObjectBehavior
         $requestGenerator->generate('DELETE', 'chat/pins', 'TEST_TOKEN', [['key' => 'broadcaster_id', 'value' => '123'], ['key' => 'pinned_message_id', 'value' => 'pin']], [])->willReturn($request);
         $this->unpinChatMessage('TEST_TOKEN', '123', 'pin')->shouldBe($response);
     }
+
+    function it_should_send_a_chat_message_to_the_source_channel_only(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $requestGenerator->generate('POST', 'chat/messages', 'TEST_TOKEN', [], [['key' => 'broadcaster_id', 'value' => '123'], ['key' => 'sender_id', 'value' => '456'], ['key' => 'message', 'value' => 'hello'], ['key' => 'for_source_only', 'value' => 'true']])->willReturn($request);
+        $this->sendChatMessage('TEST_TOKEN', '123', '456', 'hello', null, 'true')->shouldBe($response);
+    }
+
+    function it_should_get_user_emotes_for_a_broadcaster_with_paging(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $requestGenerator->generate('GET', 'chat/emotes/user', 'TEST_TOKEN', [['key' => 'user_id', 'value' => '456'], ['key' => 'broadcaster_id', 'value' => '123'], ['key' => 'after', 'value' => 'cursor']], [])->willReturn($request);
+        $this->getUserEmotes('TEST_TOKEN', '456', '123', 'cursor')->shouldBe($response);
+    }
 }

@@ -87,4 +87,10 @@ class GuestStarApiSpec extends ObjectBehavior
         $requestGenerator->generate('PATCH', 'guest_star/slot_settings', 'TEST_TOKEN', [['key' => 'broadcaster_id', 'value' => '123'], ['key' => 'moderator_id', 'value' => '456'], ['key' => 'session_id', 'value' => 'sess'], ['key' => 'slot_id', 'value' => '1'], ['key' => 'is_audio_enabled', 'value' => true]], [])->willReturn($request);
         $this->updateGuestStarSlotSettings('TEST_TOKEN', '123', '456', 'sess', '1', ['is_audio_enabled' => true])->shouldBe($response);
     }
+
+    function it_should_delete_a_guest_star_slot_and_reinvite(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $requestGenerator->generate('DELETE', 'guest_star/slot', 'TEST_TOKEN', [['key' => 'broadcaster_id', 'value' => '123'], ['key' => 'moderator_id', 'value' => '456'], ['key' => 'session_id', 'value' => 'sess'], ['key' => 'guest_id', 'value' => '789'], ['key' => 'slot_id', 'value' => '1'], ['key' => 'should_reinvite_guest', 'value' => 'true']], [])->willReturn($request);
+        $this->deleteGuestStarSlot('TEST_TOKEN', '123', '456', 'sess', '789', '1', 'true')->shouldBe($response);
+    }
 }

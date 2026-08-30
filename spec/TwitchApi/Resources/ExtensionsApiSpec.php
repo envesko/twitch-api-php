@@ -81,4 +81,10 @@ class ExtensionsApiSpec extends ObjectBehavior
         $requestGenerator->generate('POST', 'extensions/jwt/secrets', 'TEST_JWT', [['key' => 'extension_id', 'value' => 'ext'], ['key' => 'delay', 'value' => 300]], [])->willReturn($request);
         $this->createExtensionSecret('TEST_JWT', 'ext', 300)->shouldBe($response);
     }
+
+    function it_should_get_released_extensions_for_a_version(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $requestGenerator->generate('GET', 'extensions/released', 'TEST_TOKEN', [['key' => 'extension_id', 'value' => 'ext'], ['key' => 'extension_version', 'value' => '1.0.0']], [])->willReturn($request);
+        $this->getReleasedExtensions('TEST_TOKEN', 'ext', '1.0.0')->shouldBe($response);
+    }
 }
