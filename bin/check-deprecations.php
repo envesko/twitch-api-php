@@ -46,9 +46,12 @@ set_error_handler(static function (int $severity, string $message, string $file 
         return true;
     }
 
-    // Normalise separators so a baseline written on Windows still matches on CI.
+    // Normalise separators so a baseline written on Windows still matches on CI. The line
+    // number is deliberately not part of the identity: it shifts whenever anything above it
+    // is edited, which would make the baseline need refreshing after unrelated changes. The
+    // count per file carries the same protection against a new occurrence appearing.
     $relative = str_replace('\\', '/', substr(realpath($file) ?: $file, strlen($srcDir) + 1));
-    $diagnostics[] = sprintf('%s: %s (%s:%d)', $labels[$severity], $message, $relative, $line);
+    $diagnostics[] = sprintf('%s: %s (%s)', $labels[$severity], $message, $relative);
 
     return true;
 });
@@ -96,8 +99,14 @@ restore_error_handler();
 
 printf("Checked %d classes on PHP %s.\n", $loaded, PHP_VERSION);
 
-$diagnostics = array_values(array_unique($diagnostics));
-sort($diagnostics);
+// Counted rather than de-duplicated, so a second occurrence of an already-baselined
+// diagnostic in the same file is still reported as new.
+$counts = array_count_values($diagnostics);
+ksort($counts);
+$diagnostics = [];
+foreach ($counts as $message => $n) {
+    $diagnostics[] = $n . "\t" . $message;
+}
 
 // Some diagnostics cannot be fixed without a breaking change and are held for the next major.
 // They live in a baseline so the check still fails on anything new. Run with --update-baseline

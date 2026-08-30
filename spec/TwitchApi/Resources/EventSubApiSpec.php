@@ -81,7 +81,7 @@ class EventSubApiSpec extends ObjectBehavior
 
     function it_should_subscribe_to_channel_update(RequestGenerator $requestGenerator, Request $request, Response $response)
     {
-        $this->createEventSubSubscription('channel.update', '1', ['broadcaster_user_id' => '12345'], $requestGenerator)->willReturn($request);
+        $this->createEventSubSubscription('channel.update', '2', ['broadcaster_user_id' => '12345'], $requestGenerator)->willReturn($request);
         $this->subscribeToChannelUpdate($this->bearer, $this->secret, $this->callback, '12345')->shouldBe($response);
     }
 
@@ -225,19 +225,19 @@ class EventSubApiSpec extends ObjectBehavior
 
     function it_should_subscribe_to_channel_hype_train_begin(RequestGenerator $requestGenerator, Request $request, Response $response)
     {
-        $this->createEventSubSubscription('channel.hype_train.begin', '1', ['broadcaster_user_id' => '12345'], $requestGenerator)->willReturn($request);
+        $this->createEventSubSubscription('channel.hype_train.begin', '2', ['broadcaster_user_id' => '12345'], $requestGenerator)->willReturn($request);
         $this->subscribeToChannelHypeTrainBegin($this->bearer, $this->secret, $this->callback, '12345')->shouldBe($response);
     }
 
     function it_should_subscribe_to_channel_hype_train_progress(RequestGenerator $requestGenerator, Request $request, Response $response)
     {
-        $this->createEventSubSubscription('channel.hype_train.progress', '1', ['broadcaster_user_id' => '12345'], $requestGenerator)->willReturn($request);
+        $this->createEventSubSubscription('channel.hype_train.progress', '2', ['broadcaster_user_id' => '12345'], $requestGenerator)->willReturn($request);
         $this->subscribeToChannelHypeTrainProgress($this->bearer, $this->secret, $this->callback, '12345')->shouldBe($response);
     }
 
     function it_should_subscribe_to_channel_hype_train_end(RequestGenerator $requestGenerator, Request $request, Response $response)
     {
-        $this->createEventSubSubscription('channel.hype_train.end', '1', ['broadcaster_user_id' => '12345'], $requestGenerator)->willReturn($request);
+        $this->createEventSubSubscription('channel.hype_train.end', '2', ['broadcaster_user_id' => '12345'], $requestGenerator)->willReturn($request);
         $this->subscribeToChannelHypeTrainEnd($this->bearer, $this->secret, $this->callback, '12345')->shouldBe($response);
     }
 
@@ -353,5 +353,252 @@ class EventSubApiSpec extends ObjectBehavior
     {
         $this->createEventSubSubscription('channel.shoutout.receive', '1', ['broadcaster_user_id' => '12345', 'moderator_user_id' => '54321'], $requestGenerator)->willReturn($request);
         $this->subscribeToChannelShoutoutReceive($this->bearer, $this->secret, $this->callback, '12345', '54321')->shouldBe($response);
+    }
+
+    function it_should_subscribe_to_automod_message_hold(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $this->createEventSubSubscription('automod.message.hold', '2', ['broadcaster_user_id' => '12345', 'moderator_user_id' => '54321'], $requestGenerator)->willReturn($request);
+        $this->subscribeToAutomodMessageHold($this->bearer, $this->secret, $this->callback, '12345', '54321')->shouldBe($response);
+    }
+
+    function it_should_subscribe_to_automod_message_update(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $this->createEventSubSubscription('automod.message.update', '2', ['broadcaster_user_id' => '12345', 'moderator_user_id' => '54321'], $requestGenerator)->willReturn($request);
+        $this->subscribeToAutomodMessageUpdate($this->bearer, $this->secret, $this->callback, '12345', '54321')->shouldBe($response);
+    }
+
+    function it_should_subscribe_to_automod_settings_update(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $this->createEventSubSubscription('automod.settings.update', '1', ['broadcaster_user_id' => '12345', 'moderator_user_id' => '54321'], $requestGenerator)->willReturn($request);
+        $this->subscribeToAutomodSettingsUpdate($this->bearer, $this->secret, $this->callback, '12345', '54321')->shouldBe($response);
+    }
+
+    function it_should_subscribe_to_automod_terms_update(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $this->createEventSubSubscription('automod.terms.update', '1', ['broadcaster_user_id' => '12345', 'moderator_user_id' => '54321'], $requestGenerator)->willReturn($request);
+        $this->subscribeToAutomodTermsUpdate($this->bearer, $this->secret, $this->callback, '12345', '54321')->shouldBe($response);
+    }
+
+    function it_should_subscribe_to_channel_ad_break_begin(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $this->createEventSubSubscription('channel.ad_break.begin', '1', ['broadcaster_user_id' => '12345'], $requestGenerator)->willReturn($request);
+        $this->subscribeToChannelAdBreakBegin($this->bearer, $this->secret, $this->callback, '12345')->shouldBe($response);
+    }
+
+    function it_should_subscribe_to_channel_bits_use(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $this->createEventSubSubscription('channel.bits.use', '1', ['broadcaster_user_id' => '12345'], $requestGenerator)->willReturn($request);
+        $this->subscribeToChannelBitsUse($this->bearer, $this->secret, $this->callback, '12345')->shouldBe($response);
+    }
+
+    function it_should_subscribe_to_channel_points_automatic_reward_redemption_add(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $this->createEventSubSubscription('channel.channel_points_automatic_reward_redemption.add', '2', ['broadcaster_user_id' => '12345'], $requestGenerator)->willReturn($request);
+        $this->subscribeToChannelPointsAutomaticRewardRedemptionAdd($this->bearer, $this->secret, $this->callback, '12345')->shouldBe($response);
+    }
+
+    function it_should_subscribe_to_channel_chat_clear(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $this->createEventSubSubscription('channel.chat.clear', '1', ['broadcaster_user_id' => '12345', 'user_id' => '99999'], $requestGenerator)->willReturn($request);
+        $this->subscribeToChannelChatClear($this->bearer, $this->secret, $this->callback, '12345', '99999')->shouldBe($response);
+    }
+
+    function it_should_subscribe_to_channel_chat_clear_user_messages(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $this->createEventSubSubscription('channel.chat.clear_user_messages', '1', ['broadcaster_user_id' => '12345', 'user_id' => '99999'], $requestGenerator)->willReturn($request);
+        $this->subscribeToChannelChatClearUserMessages($this->bearer, $this->secret, $this->callback, '12345', '99999')->shouldBe($response);
+    }
+
+    function it_should_subscribe_to_channel_chat_message(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $this->createEventSubSubscription('channel.chat.message', '1', ['broadcaster_user_id' => '12345', 'user_id' => '99999'], $requestGenerator)->willReturn($request);
+        $this->subscribeToChannelChatMessage($this->bearer, $this->secret, $this->callback, '12345', '99999')->shouldBe($response);
+    }
+
+    function it_should_subscribe_to_channel_chat_message_delete(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $this->createEventSubSubscription('channel.chat.message_delete', '1', ['broadcaster_user_id' => '12345', 'user_id' => '99999'], $requestGenerator)->willReturn($request);
+        $this->subscribeToChannelChatMessageDelete($this->bearer, $this->secret, $this->callback, '12345', '99999')->shouldBe($response);
+    }
+
+    function it_should_subscribe_to_channel_chat_notification(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $this->createEventSubSubscription('channel.chat.notification', '1', ['broadcaster_user_id' => '12345', 'user_id' => '99999'], $requestGenerator)->willReturn($request);
+        $this->subscribeToChannelChatNotification($this->bearer, $this->secret, $this->callback, '12345', '99999')->shouldBe($response);
+    }
+
+    function it_should_subscribe_to_channel_chat_user_message_hold(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $this->createEventSubSubscription('channel.chat.user_message_hold', '1', ['broadcaster_user_id' => '12345', 'user_id' => '99999'], $requestGenerator)->willReturn($request);
+        $this->subscribeToChannelChatUserMessageHold($this->bearer, $this->secret, $this->callback, '12345', '99999')->shouldBe($response);
+    }
+
+    function it_should_subscribe_to_channel_chat_user_message_update(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $this->createEventSubSubscription('channel.chat.user_message_update', '1', ['broadcaster_user_id' => '12345', 'user_id' => '99999'], $requestGenerator)->willReturn($request);
+        $this->subscribeToChannelChatUserMessageUpdate($this->bearer, $this->secret, $this->callback, '12345', '99999')->shouldBe($response);
+    }
+
+    function it_should_subscribe_to_channel_chat_settings_update(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $this->createEventSubSubscription('channel.chat_settings.update', '1', ['broadcaster_user_id' => '12345', 'user_id' => '99999'], $requestGenerator)->willReturn($request);
+        $this->subscribeToChannelChatSettingsUpdate($this->bearer, $this->secret, $this->callback, '12345', '99999')->shouldBe($response);
+    }
+
+    function it_should_subscribe_to_channel_custom_power_up_redemption_add(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $this->createEventSubSubscription('channel.custom_power_up_redemption.add', '1', ['broadcaster_user_id' => '12345'], $requestGenerator)->willReturn($request);
+        $this->subscribeToChannelCustomPowerUpRedemptionAdd($this->bearer, $this->secret, $this->callback, '12345')->shouldBe($response);
+    }
+
+    function it_should_subscribe_to_channel_guest_star_guest_update(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $this->createEventSubSubscription('channel.guest_star_guest.update', 'beta', ['broadcaster_user_id' => '12345', 'moderator_user_id' => '54321'], $requestGenerator)->willReturn($request);
+        $this->subscribeToChannelGuestStarGuestUpdate($this->bearer, $this->secret, $this->callback, '12345', '54321')->shouldBe($response);
+    }
+
+    function it_should_subscribe_to_channel_guest_star_session_begin(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $this->createEventSubSubscription('channel.guest_star_session.begin', 'beta', ['broadcaster_user_id' => '12345', 'moderator_user_id' => '54321'], $requestGenerator)->willReturn($request);
+        $this->subscribeToChannelGuestStarSessionBegin($this->bearer, $this->secret, $this->callback, '12345', '54321')->shouldBe($response);
+    }
+
+    function it_should_subscribe_to_channel_guest_star_session_end(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $this->createEventSubSubscription('channel.guest_star_session.end', 'beta', ['broadcaster_user_id' => '12345', 'moderator_user_id' => '54321'], $requestGenerator)->willReturn($request);
+        $this->subscribeToChannelGuestStarSessionEnd($this->bearer, $this->secret, $this->callback, '12345', '54321')->shouldBe($response);
+    }
+
+    function it_should_subscribe_to_channel_guest_star_settings_update(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $this->createEventSubSubscription('channel.guest_star_settings.update', 'beta', ['broadcaster_user_id' => '12345', 'moderator_user_id' => '54321'], $requestGenerator)->willReturn($request);
+        $this->subscribeToChannelGuestStarSettingsUpdate($this->bearer, $this->secret, $this->callback, '12345', '54321')->shouldBe($response);
+    }
+
+    function it_should_subscribe_to_channel_moderate(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $this->createEventSubSubscription('channel.moderate', '2', ['broadcaster_user_id' => '12345', 'moderator_user_id' => '54321'], $requestGenerator)->willReturn($request);
+        $this->subscribeToChannelModerate($this->bearer, $this->secret, $this->callback, '12345', '54321')->shouldBe($response);
+    }
+
+    function it_should_subscribe_to_channel_shared_chat_begin(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $this->createEventSubSubscription('channel.shared_chat.begin', '1', ['broadcaster_user_id' => '12345'], $requestGenerator)->willReturn($request);
+        $this->subscribeToChannelSharedChatBegin($this->bearer, $this->secret, $this->callback, '12345')->shouldBe($response);
+    }
+
+    function it_should_subscribe_to_channel_shared_chat_update(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $this->createEventSubSubscription('channel.shared_chat.update', '1', ['broadcaster_user_id' => '12345'], $requestGenerator)->willReturn($request);
+        $this->subscribeToChannelSharedChatUpdate($this->bearer, $this->secret, $this->callback, '12345')->shouldBe($response);
+    }
+
+    function it_should_subscribe_to_channel_shared_chat_end(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $this->createEventSubSubscription('channel.shared_chat.end', '1', ['broadcaster_user_id' => '12345'], $requestGenerator)->willReturn($request);
+        $this->subscribeToChannelSharedChatEnd($this->bearer, $this->secret, $this->callback, '12345')->shouldBe($response);
+    }
+
+    function it_should_subscribe_to_channel_suspicious_user_message(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $this->createEventSubSubscription('channel.suspicious_user.message', '1', ['broadcaster_user_id' => '12345', 'moderator_user_id' => '54321'], $requestGenerator)->willReturn($request);
+        $this->subscribeToChannelSuspiciousUserMessage($this->bearer, $this->secret, $this->callback, '12345', '54321')->shouldBe($response);
+    }
+
+    function it_should_subscribe_to_channel_suspicious_user_update(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $this->createEventSubSubscription('channel.suspicious_user.update', '1', ['broadcaster_user_id' => '12345', 'moderator_user_id' => '54321'], $requestGenerator)->willReturn($request);
+        $this->subscribeToChannelSuspiciousUserUpdate($this->bearer, $this->secret, $this->callback, '12345', '54321')->shouldBe($response);
+    }
+
+    function it_should_subscribe_to_channel_unban_request_create(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $this->createEventSubSubscription('channel.unban_request.create', '1', ['broadcaster_user_id' => '12345', 'moderator_user_id' => '54321'], $requestGenerator)->willReturn($request);
+        $this->subscribeToChannelUnbanRequestCreate($this->bearer, $this->secret, $this->callback, '12345', '54321')->shouldBe($response);
+    }
+
+    function it_should_subscribe_to_channel_unban_request_resolve(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $this->createEventSubSubscription('channel.unban_request.resolve', '1', ['broadcaster_user_id' => '12345', 'moderator_user_id' => '54321'], $requestGenerator)->willReturn($request);
+        $this->subscribeToChannelUnbanRequestResolve($this->bearer, $this->secret, $this->callback, '12345', '54321')->shouldBe($response);
+    }
+
+    function it_should_subscribe_to_channel_vip_add(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $this->createEventSubSubscription('channel.vip.add', '1', ['broadcaster_user_id' => '12345'], $requestGenerator)->willReturn($request);
+        $this->subscribeToChannelVipAdd($this->bearer, $this->secret, $this->callback, '12345')->shouldBe($response);
+    }
+
+    function it_should_subscribe_to_channel_vip_remove(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $this->createEventSubSubscription('channel.vip.remove', '1', ['broadcaster_user_id' => '12345'], $requestGenerator)->willReturn($request);
+        $this->subscribeToChannelVipRemove($this->bearer, $this->secret, $this->callback, '12345')->shouldBe($response);
+    }
+
+    function it_should_subscribe_to_channel_warning_acknowledge(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $this->createEventSubSubscription('channel.warning.acknowledge', '1', ['broadcaster_user_id' => '12345', 'moderator_user_id' => '54321'], $requestGenerator)->willReturn($request);
+        $this->subscribeToChannelWarningAcknowledge($this->bearer, $this->secret, $this->callback, '12345', '54321')->shouldBe($response);
+    }
+
+    function it_should_subscribe_to_channel_warning_send(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $this->createEventSubSubscription('channel.warning.send', '1', ['broadcaster_user_id' => '12345', 'moderator_user_id' => '54321'], $requestGenerator)->willReturn($request);
+        $this->subscribeToChannelWarningSend($this->bearer, $this->secret, $this->callback, '12345', '54321')->shouldBe($response);
+    }
+
+    function it_should_subscribe_to_user_whisper_message(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $this->createEventSubSubscription('user.whisper.message', '1', ['user_id' => '99999'], $requestGenerator)->willReturn($request);
+        $this->subscribeToUserWhisperMessage($this->bearer, $this->secret, $this->callback, '99999')->shouldBe($response);
+    }
+
+    function it_should_subscribe_to_conduit_shard_disabled(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $this->createEventSubSubscription('conduit.shard.disabled', '1', ['client_id' => 'CLIENT'], $requestGenerator)->willReturn($request);
+        $this->subscribeToConduitShardDisabled($this->bearer, $this->secret, $this->callback, 'CLIENT')->shouldBe($response);
+    }
+
+    function it_should_subscribe_to_conduit_shard_disabled_for_one_conduit(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $this->createEventSubSubscription('conduit.shard.disabled', '1', ['client_id' => 'CLIENT', 'conduit_id' => 'CONDUIT'], $requestGenerator)->willReturn($request);
+        $this->subscribeToConduitShardDisabled($this->bearer, $this->secret, $this->callback, 'CLIENT', 'CONDUIT')->shouldBe($response);
+    }
+
+    function it_should_create_a_subscription_over_websocket(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $bodyParams = [];
+        $bodyParams[] = ['key' => 'type', 'value' => 'channel.chat.message'];
+        $bodyParams[] = ['key' => 'version', 'value' => '1'];
+        $bodyParams[] = ['key' => 'condition', 'value' => ['broadcaster_user_id' => '12345', 'user_id' => '99999']];
+        $bodyParams[] = ['key' => 'transport', 'value' => ['method' => 'websocket', 'session_id' => 'SESSION']];
+
+        $requestGenerator->generate('POST', 'eventsub/subscriptions', $this->bearer, [], $bodyParams)->willReturn($request);
+        $this->createEventSubSubscriptionViaWebSocket($this->bearer, 'SESSION', 'channel.chat.message', '1', ['broadcaster_user_id' => '12345', 'user_id' => '99999'])->shouldBe($response);
+    }
+
+    function it_should_create_a_subscription_over_a_conduit(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $bodyParams = [];
+        $bodyParams[] = ['key' => 'type', 'value' => 'stream.online'];
+        $bodyParams[] = ['key' => 'version', 'value' => '1'];
+        $bodyParams[] = ['key' => 'condition', 'value' => ['broadcaster_user_id' => '12345']];
+        $bodyParams[] = ['key' => 'transport', 'value' => ['method' => 'conduit', 'conduit_id' => 'CONDUIT']];
+
+        $requestGenerator->generate('POST', 'eventsub/subscriptions', $this->bearer, [], $bodyParams)->willReturn($request);
+        $this->createEventSubSubscriptionViaConduit($this->bearer, 'CONDUIT', 'stream.online', '1', ['broadcaster_user_id' => '12345'])->shouldBe($response);
+    }
+
+    function it_should_pass_batching_through_on_a_conduit_subscription(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $bodyParams = [];
+        $bodyParams[] = ['key' => 'type', 'value' => 'drop.entitlement.grant'];
+        $bodyParams[] = ['key' => 'version', 'value' => '1'];
+        $bodyParams[] = ['key' => 'condition', 'value' => ['organization_id' => 'ORG']];
+        $bodyParams[] = ['key' => 'transport', 'value' => ['method' => 'conduit', 'conduit_id' => 'CONDUIT']];
+        $bodyParams[] = ['key' => 'is_batching_enabled', 'value' => true];
+
+        $requestGenerator->generate('POST', 'eventsub/subscriptions', $this->bearer, [], $bodyParams)->willReturn($request);
+        $this->createEventSubSubscriptionViaConduit($this->bearer, 'CONDUIT', 'drop.entitlement.grant', '1', ['organization_id' => 'ORG'], true)->shouldBe($response);
     }
 }
