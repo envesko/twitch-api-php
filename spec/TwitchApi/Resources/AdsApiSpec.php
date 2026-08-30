@@ -21,4 +21,16 @@ class AdsApiSpec extends ObjectBehavior
         $requestGenerator->generate('POST', 'channels/commercial', 'TEST_TOKEN', [], [['key' => 'broadcaster_id', 'value' => '123'], ['key' => 'length', 'value' => 30]])->willReturn($request);
         $this->startCommercial('TEST_TOKEN', '123', 30)->shouldBe($response);
     }
+
+    function it_should_get_the_ad_schedule(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $requestGenerator->generate('GET', 'channels/ads', 'TEST_TOKEN', [['key' => 'broadcaster_id', 'value' => '123']], [])->willReturn($request);
+        $this->getAdSchedule('TEST_TOKEN', '123')->shouldBe($response);
+    }
+
+    function it_should_snooze_the_next_ad(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $requestGenerator->generate('POST', 'channels/ads/schedule/snooze', 'TEST_TOKEN', [['key' => 'broadcaster_id', 'value' => '123']], [])->willReturn($request);
+        $this->snoozeNextAd('TEST_TOKEN', '123')->shouldBe($response);
+    }
 }

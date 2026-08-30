@@ -183,4 +183,40 @@ class ModerationApiSpec extends ObjectBehavior
         $requestGenerator->generate('PUT', 'moderation/shield_mode', 'TEST_TOKEN', [['key' => 'broadcaster_id', 'value' => '123'], ['key' => 'moderator_id', 'value' => '456']], [['key' => 'is_active', 'value' => true]])->willReturn($request);
         $this->updateShieldModeStatus('TEST_TOKEN', '123', '456', true)->shouldBe($response);
     }
+
+    function it_should_get_moderated_channels(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $requestGenerator->generate('GET', 'moderation/channels', 'TEST_TOKEN', [['key' => 'user_id', 'value' => '456']], [])->willReturn($request);
+        $this->getModeratedChannels('TEST_TOKEN', '456')->shouldBe($response);
+    }
+
+    function it_should_get_unban_requests(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $requestGenerator->generate('GET', 'moderation/unban_requests', 'TEST_TOKEN', [['key' => 'broadcaster_id', 'value' => '123'], ['key' => 'moderator_id', 'value' => '456'], ['key' => 'status', 'value' => 'pending']], [])->willReturn($request);
+        $this->getUnbanRequests('TEST_TOKEN', '123', '456', 'pending')->shouldBe($response);
+    }
+
+    function it_should_resolve_an_unban_request(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $requestGenerator->generate('PATCH', 'moderation/unban_requests', 'TEST_TOKEN', [['key' => 'broadcaster_id', 'value' => '123'], ['key' => 'moderator_id', 'value' => '456'], ['key' => 'unban_request_id', 'value' => 'req'], ['key' => 'status', 'value' => 'approved']], [])->willReturn($request);
+        $this->resolveUnbanRequest('TEST_TOKEN', '123', '456', 'req', 'approved')->shouldBe($response);
+    }
+
+    function it_should_warn_a_chat_user(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $requestGenerator->generate('POST', 'moderation/warnings', 'TEST_TOKEN', [['key' => 'broadcaster_id', 'value' => '123'], ['key' => 'moderator_id', 'value' => '456']], [['key' => 'data', 'value' => ['user_id' => '789', 'reason' => 'be nice']]])->willReturn($request);
+        $this->warnChatUser('TEST_TOKEN', '123', '456', '789', 'be nice')->shouldBe($response);
+    }
+
+    function it_should_add_a_suspicious_user(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $requestGenerator->generate('POST', 'moderation/suspicious_users', 'TEST_TOKEN', [['key' => 'broadcaster_id', 'value' => '123'], ['key' => 'moderator_id', 'value' => '456'], ['key' => 'user_id', 'value' => '789'], ['key' => 'status', 'value' => 'restricted']], [])->willReturn($request);
+        $this->addSuspiciousUser('TEST_TOKEN', '123', '456', '789', 'restricted')->shouldBe($response);
+    }
+
+    function it_should_remove_a_suspicious_user(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $requestGenerator->generate('DELETE', 'moderation/suspicious_users', 'TEST_TOKEN', [['key' => 'broadcaster_id', 'value' => '123'], ['key' => 'moderator_id', 'value' => '456'], ['key' => 'user_id', 'value' => '789']], [])->willReturn($request);
+        $this->removeSuspiciousUser('TEST_TOKEN', '123', '456', '789')->shouldBe($response);
+    }
 }

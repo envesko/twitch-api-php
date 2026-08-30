@@ -170,4 +170,30 @@ class UsersApi extends AbstractResource
 
         return $this->deleteApi('users/blocks', $bearer, $queryParamsMap);
     }
+
+    /**
+     * @throws GuzzleException
+     * @link https://dev.twitch.tv/docs/api/reference/#update-user-extensions
+     */
+    public function updateUserExtensions(string $bearer, array $data): ResponseInterface
+    {
+        $bodyParamsMap = [];
+
+        $bodyParamsMap[] = ['key' => 'data', 'value' => $data];
+
+        return $this->putApi('users/extensions', $bearer, [], $bodyParamsMap);
+    }
+
+    /**
+     * @throws GuzzleException
+     * @link https://dev.twitch.tv/docs/api/reference/#get-authorization-by-user
+     */
+    public function getAuthorizationByUser(string $bearer, string $userId): ResponseInterface
+    {
+        $queryParamsMap = [];
+
+        $queryParamsMap[] = ['key' => 'user_id', 'value' => $userId];
+
+        return $this->getApi('authorization/users', $bearer, $queryParamsMap);
+    }
 }

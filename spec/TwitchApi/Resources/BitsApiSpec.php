@@ -63,4 +63,29 @@ class BitsApiSpec extends ObjectBehavior
         $requestGenerator->generate('GET', 'bits/leaderboard', 'TEST_TOKEN', [['key' => 'count', 'value' => '100'], ['key' => 'period', 'value' => 'all'], ['key' => 'started_at', 'value' => '2019-10-12T07:20:50.52Z'], ['key' => 'user_id', 'value' => '123']], [])->willReturn($request);
         $this->getBitsLeaderboard('TEST_TOKEN', 100, 'all', '2019-10-12T07:20:50.52Z', '123')->shouldBe($response);
     }
+
+    function it_should_get_a_custom_power_up(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $requestGenerator->generate('GET', 'bits/custom_power_ups', 'TEST_TOKEN', [['key' => 'broadcaster_id', 'value' => '123']], [])->willReturn($request);
+        $this->getCustomPowerUp('TEST_TOKEN', '123')->shouldBe($response);
+    }
+
+    function it_should_get_extension_bits_products(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $requestGenerator->generate('GET', 'bits/extensions', 'TEST_TOKEN', [], [])->willReturn($request);
+        $this->getExtensionBitsProducts('TEST_TOKEN')->shouldBe($response);
+    }
+
+    function it_should_get_all_extension_bits_products(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $requestGenerator->generate('GET', 'bits/extensions', 'TEST_TOKEN', [['key' => 'should_include_all', 'value' => true]], [])->willReturn($request);
+        $this->getExtensionBitsProducts('TEST_TOKEN', true)->shouldBe($response);
+    }
+
+    function it_should_update_an_extension_bits_product(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $cost = ['amount' => 100, 'type' => 'bits'];
+        $requestGenerator->generate('PUT', 'bits/extensions', 'TEST_TOKEN', [], [['key' => 'sku', 'value' => 'SKU'], ['key' => 'cost', 'value' => $cost], ['key' => 'display_name', 'value' => 'Name'], ['key' => 'in_development', 'value' => true]])->willReturn($request);
+        $this->updateExtensionBitsProduct('TEST_TOKEN', 'SKU', $cost, 'Name', ['in_development' => true])->shouldBe($response);
+    }
 }

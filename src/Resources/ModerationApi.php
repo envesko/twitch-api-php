@@ -335,4 +335,119 @@ class ModerationApi extends AbstractResource
 
         return $this->putApi('moderation/shield_mode', $bearer, $queryParamsMap, $bodyParamsMap);
     }
+
+    /**
+     * @throws GuzzleException
+     * @link https://dev.twitch.tv/docs/api/reference/#get-moderated-channels
+     */
+    public function getModeratedChannels(string $bearer, string $userId, ?int $first = null, ?string $after = null): ResponseInterface
+    {
+        $queryParamsMap = [];
+
+        $queryParamsMap[] = ['key' => 'user_id', 'value' => $userId];
+
+        if ($first) {
+            $queryParamsMap[] = ['key' => 'first', 'value' => $first];
+        }
+
+        if ($after) {
+            $queryParamsMap[] = ['key' => 'after', 'value' => $after];
+        }
+
+        return $this->getApi('moderation/channels', $bearer, $queryParamsMap);
+    }
+
+    /**
+     * @throws GuzzleException
+     * @link https://dev.twitch.tv/docs/api/reference/#get-unban-requests
+     */
+    public function getUnbanRequests(string $bearer, string $broadcasterId, string $moderatorId, string $status, ?string $userId = null, ?string $after = null, ?int $first = null): ResponseInterface
+    {
+        $queryParamsMap = [];
+
+        $queryParamsMap[] = ['key' => 'broadcaster_id', 'value' => $broadcasterId];
+        $queryParamsMap[] = ['key' => 'moderator_id', 'value' => $moderatorId];
+        $queryParamsMap[] = ['key' => 'status', 'value' => $status];
+
+        if ($userId) {
+            $queryParamsMap[] = ['key' => 'user_id', 'value' => $userId];
+        }
+
+        if ($after) {
+            $queryParamsMap[] = ['key' => 'after', 'value' => $after];
+        }
+
+        if ($first) {
+            $queryParamsMap[] = ['key' => 'first', 'value' => $first];
+        }
+
+        return $this->getApi('moderation/unban_requests', $bearer, $queryParamsMap);
+    }
+
+    /**
+     * @throws GuzzleException
+     * @link https://dev.twitch.tv/docs/api/reference/#resolve-unban-requests
+     */
+    public function resolveUnbanRequest(string $bearer, string $broadcasterId, string $moderatorId, string $unbanRequestId, string $status, ?string $resolutionText = null): ResponseInterface
+    {
+        $queryParamsMap = [];
+
+        $queryParamsMap[] = ['key' => 'broadcaster_id', 'value' => $broadcasterId];
+        $queryParamsMap[] = ['key' => 'moderator_id', 'value' => $moderatorId];
+        $queryParamsMap[] = ['key' => 'unban_request_id', 'value' => $unbanRequestId];
+        $queryParamsMap[] = ['key' => 'status', 'value' => $status];
+
+        if ($resolutionText) {
+            $queryParamsMap[] = ['key' => 'resolution_text', 'value' => $resolutionText];
+        }
+
+        return $this->patchApi('moderation/unban_requests', $bearer, $queryParamsMap);
+    }
+
+    /**
+     * @throws GuzzleException
+     * @link https://dev.twitch.tv/docs/api/reference/#warn-chat-user
+     */
+    public function warnChatUser(string $bearer, string $broadcasterId, string $moderatorId, string $userId, string $reason): ResponseInterface
+    {
+        $queryParamsMap = $bodyParamsMap = [];
+
+        $queryParamsMap[] = ['key' => 'broadcaster_id', 'value' => $broadcasterId];
+        $queryParamsMap[] = ['key' => 'moderator_id', 'value' => $moderatorId];
+
+        $bodyParamsMap[] = ['key' => 'data', 'value' => ['user_id' => $userId, 'reason' => $reason]];
+
+        return $this->postApi('moderation/warnings', $bearer, $queryParamsMap, $bodyParamsMap);
+    }
+
+    /**
+     * @throws GuzzleException
+     * @link https://dev.twitch.tv/docs/api/reference/#add-suspicious-status-to-chat-user
+     */
+    public function addSuspiciousUser(string $bearer, string $broadcasterId, string $moderatorId, string $userId, string $status): ResponseInterface
+    {
+        $queryParamsMap = [];
+
+        $queryParamsMap[] = ['key' => 'broadcaster_id', 'value' => $broadcasterId];
+        $queryParamsMap[] = ['key' => 'moderator_id', 'value' => $moderatorId];
+        $queryParamsMap[] = ['key' => 'user_id', 'value' => $userId];
+        $queryParamsMap[] = ['key' => 'status', 'value' => $status];
+
+        return $this->postApi('moderation/suspicious_users', $bearer, $queryParamsMap);
+    }
+
+    /**
+     * @throws GuzzleException
+     * @link https://dev.twitch.tv/docs/api/reference/#remove-suspicious-status-from-chat-user
+     */
+    public function removeSuspiciousUser(string $bearer, string $broadcasterId, string $moderatorId, string $userId): ResponseInterface
+    {
+        $queryParamsMap = [];
+
+        $queryParamsMap[] = ['key' => 'broadcaster_id', 'value' => $broadcasterId];
+        $queryParamsMap[] = ['key' => 'moderator_id', 'value' => $moderatorId];
+        $queryParamsMap[] = ['key' => 'user_id', 'value' => $userId];
+
+        return $this->deleteApi('moderation/suspicious_users', $bearer, $queryParamsMap);
+    }
 }

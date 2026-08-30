@@ -84,4 +84,51 @@ class ClipsApi extends AbstractResource
 
         return $this->postApi('clips', $bearer, $queryParamsMap);
     }
+
+    /**
+     * @throws GuzzleException
+     * @link https://dev.twitch.tv/docs/api/reference/#get-clips-download
+     */
+    public function getClipsDownload(string $bearer, string $broadcasterId, ?string $startedAt = null, ?string $endedAt = null, ?int $first = null, ?string $after = null): ResponseInterface
+    {
+        $queryParamsMap = [];
+
+        $queryParamsMap[] = ['key' => 'broadcaster_id', 'value' => $broadcasterId];
+
+        if ($startedAt) {
+            $queryParamsMap[] = ['key' => 'started_at', 'value' => $startedAt];
+        }
+
+        if ($endedAt) {
+            $queryParamsMap[] = ['key' => 'ended_at', 'value' => $endedAt];
+        }
+
+        if ($first) {
+            $queryParamsMap[] = ['key' => 'first', 'value' => $first];
+        }
+
+        if ($after) {
+            $queryParamsMap[] = ['key' => 'after', 'value' => $after];
+        }
+
+        return $this->getApi('clips/downloads', $bearer, $queryParamsMap);
+    }
+
+    /**
+     * @throws GuzzleException
+     * @link https://dev.twitch.tv/docs/api/reference/#create-clip-from-vod
+     */
+    public function createClipFromVod(string $bearer, string $videoId, int $offsetSeconds, ?int $durationSeconds = null): ResponseInterface
+    {
+        $bodyParamsMap = [];
+
+        $bodyParamsMap[] = ['key' => 'video_id', 'value' => $videoId];
+        $bodyParamsMap[] = ['key' => 'offset_seconds', 'value' => $offsetSeconds];
+
+        if ($durationSeconds) {
+            $bodyParamsMap[] = ['key' => 'duration_seconds', 'value' => $durationSeconds];
+        }
+
+        return $this->postApi('videos/clips', $bearer, [], $bodyParamsMap);
+    }
 }

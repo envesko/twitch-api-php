@@ -196,4 +196,110 @@ class ChatApi extends AbstractResource
 
         return $this->postApi('chat/shoutouts', $bearer, $queryParamsMap);
     }
+
+    /**
+     * @throws GuzzleException
+     * @link https://dev.twitch.tv/docs/api/reference/#send-chat-message
+     */
+    public function sendChatMessage(string $bearer, string $broadcasterId, string $senderId, string $message, ?string $replyParentMessageId = null, ?string $sourceOnly = null): ResponseInterface
+    {
+        $bodyParamsMap = [];
+
+        $bodyParamsMap[] = ['key' => 'broadcaster_id', 'value' => $broadcasterId];
+        $bodyParamsMap[] = ['key' => 'sender_id', 'value' => $senderId];
+        $bodyParamsMap[] = ['key' => 'message', 'value' => $message];
+
+        if ($replyParentMessageId) {
+            $bodyParamsMap[] = ['key' => 'reply_parent_message_id', 'value' => $replyParentMessageId];
+        }
+
+        if ($sourceOnly) {
+            $bodyParamsMap[] = ['key' => 'for_source_only', 'value' => $sourceOnly];
+        }
+
+        return $this->postApi('chat/messages', $bearer, [], $bodyParamsMap);
+    }
+
+    /**
+     * @throws GuzzleException
+     * @link https://dev.twitch.tv/docs/api/reference/#get-user-emotes
+     */
+    public function getUserEmotes(string $bearer, string $userId, ?string $broadcasterId = null, ?string $after = null): ResponseInterface
+    {
+        $queryParamsMap = [];
+
+        $queryParamsMap[] = ['key' => 'user_id', 'value' => $userId];
+
+        if ($broadcasterId) {
+            $queryParamsMap[] = ['key' => 'broadcaster_id', 'value' => $broadcasterId];
+        }
+
+        if ($after) {
+            $queryParamsMap[] = ['key' => 'after', 'value' => $after];
+        }
+
+        return $this->getApi('chat/emotes/user', $bearer, $queryParamsMap);
+    }
+
+    /**
+     * @throws GuzzleException
+     * @link https://dev.twitch.tv/docs/api/reference/#get-pinned-chat-message
+     */
+    public function getPinnedChatMessage(string $bearer, string $broadcasterId): ResponseInterface
+    {
+        $queryParamsMap = [];
+
+        $queryParamsMap[] = ['key' => 'broadcaster_id', 'value' => $broadcasterId];
+
+        return $this->getApi('chat/pins', $bearer, $queryParamsMap);
+    }
+
+    /**
+     * @throws GuzzleException
+     * @link https://dev.twitch.tv/docs/api/reference/#pin-chat-message
+     */
+    public function pinChatMessage(string $bearer, string $broadcasterId, string $messageId, ?int $durationSeconds = null): ResponseInterface
+    {
+        $queryParamsMap = $bodyParamsMap = [];
+
+        $queryParamsMap[] = ['key' => 'broadcaster_id', 'value' => $broadcasterId];
+
+        $bodyParamsMap[] = ['key' => 'message_id', 'value' => $messageId];
+
+        if ($durationSeconds) {
+            $bodyParamsMap[] = ['key' => 'duration_seconds', 'value' => $durationSeconds];
+        }
+
+        return $this->putApi('chat/pins', $bearer, $queryParamsMap, $bodyParamsMap);
+    }
+
+    /**
+     * @throws GuzzleException
+     * @link https://dev.twitch.tv/docs/api/reference/#update-pinned-chat-message
+     */
+    public function updatePinnedChatMessage(string $bearer, string $broadcasterId, string $pinnedMessageId, int $durationSeconds): ResponseInterface
+    {
+        $queryParamsMap = $bodyParamsMap = [];
+
+        $queryParamsMap[] = ['key' => 'broadcaster_id', 'value' => $broadcasterId];
+
+        $bodyParamsMap[] = ['key' => 'pinned_message_id', 'value' => $pinnedMessageId];
+        $bodyParamsMap[] = ['key' => 'duration_seconds', 'value' => $durationSeconds];
+
+        return $this->patchApi('chat/pins', $bearer, $queryParamsMap, $bodyParamsMap);
+    }
+
+    /**
+     * @throws GuzzleException
+     * @link https://dev.twitch.tv/docs/api/reference/#unpin-chat-message
+     */
+    public function unpinChatMessage(string $bearer, string $broadcasterId, string $pinnedMessageId): ResponseInterface
+    {
+        $queryParamsMap = [];
+
+        $queryParamsMap[] = ['key' => 'broadcaster_id', 'value' => $broadcasterId];
+        $queryParamsMap[] = ['key' => 'pinned_message_id', 'value' => $pinnedMessageId];
+
+        return $this->deleteApi('chat/pins', $bearer, $queryParamsMap);
+    }
 }

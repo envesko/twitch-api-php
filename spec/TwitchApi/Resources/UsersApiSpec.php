@@ -135,4 +135,17 @@ class UsersApiSpec extends ObjectBehavior
         $requestGenerator->generate('DELETE', 'users/blocks', 'TEST_TOKEN', [['key' => 'target_user_id', 'value' => '123']], [])->willReturn($request);
         $this->unblockUser('TEST_TOKEN', '123')->shouldBe($response);
     }
+
+    function it_should_update_user_extensions(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $data = ['panel' => ['1' => ['active' => true, 'id' => 'ext', 'version' => '1.0.0']]];
+        $requestGenerator->generate('PUT', 'users/extensions', 'TEST_TOKEN', [], [['key' => 'data', 'value' => $data]])->willReturn($request);
+        $this->updateUserExtensions('TEST_TOKEN', $data)->shouldBe($response);
+    }
+
+    function it_should_get_authorization_by_user(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $requestGenerator->generate('GET', 'authorization/users', 'TEST_TOKEN', [['key' => 'user_id', 'value' => '456']], [])->willReturn($request);
+        $this->getAuthorizationByUser('TEST_TOKEN', '456')->shouldBe($response);
+    }
 }
