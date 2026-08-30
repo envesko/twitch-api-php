@@ -27,7 +27,7 @@ class EventSubSignatureTest extends TestCase
 
     private function sign(string $algo = 'sha256', string $secret = self::SECRET): string
     {
-        return $algo . '=' . hash_hmac($algo, self::MESSAGE_ID . self::TIMESTAMP . self::BODY, $secret);
+        return $algo.'='.hash_hmac($algo, self::MESSAGE_ID.self::TIMESTAMP.self::BODY, $secret);
     }
 
     private function verify(string $signature): bool
@@ -47,7 +47,7 @@ class EventSubSignatureTest extends TestCase
 
     public function testATamperedHashIsRejected(): void
     {
-        $this->assertFalse($this->verify('sha256=' . str_repeat('0', 64)));
+        $this->assertFalse($this->verify('sha256='.str_repeat('0', 64)));
     }
 
     public function testABodyChangeInvalidatesTheSignature(): void
@@ -98,8 +98,8 @@ class EventSubSignatureTest extends TestCase
             'empty' => [''],
             'no separator' => ['sha256'],
             'hash only' => [str_repeat('0', 64)],
-            'unknown algorithm' => ['definitely-not-an-algorithm=' . str_repeat('0', 64)],
-            'empty algorithm' => ['=' . str_repeat('0', 64)],
+            'unknown algorithm' => ['definitely-not-an-algorithm='.str_repeat('0', 64)],
+            'empty algorithm' => ['='.str_repeat('0', 64)],
         ];
     }
 

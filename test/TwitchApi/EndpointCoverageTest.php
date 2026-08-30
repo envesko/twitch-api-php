@@ -9,11 +9,6 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
-use ReflectionClass;
-use ReflectionMethod;
-use Throwable;
 use TwitchApi\HelixGuzzleClient;
 use TwitchApi\RequestGenerator;
 
@@ -54,7 +49,7 @@ class EndpointCoverageTest extends TestCase
      */
     private function drive(): array
     {
-        $dir = __DIR__ . '/../../src/Resources';
+        $dir = __DIR__.'/../../src/Resources';
         $covered = [];
 
         foreach (scandir($dir) as $file) {
@@ -62,15 +57,15 @@ class EndpointCoverageTest extends TestCase
                 continue;
             }
 
-            $class = 'TwitchApi\\Resources\\' . substr($file, 0, -4);
-            $ref = new ReflectionClass($class);
+            $class = 'TwitchApi\\Resources\\'.substr($file, 0, -4);
+            $ref = new \ReflectionClass($class);
 
-            foreach ($ref->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
+            foreach ($ref->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
                 if ($method->isConstructor() || $method->getDeclaringClass()->getName() !== $class) {
                     continue;
                 }
 
-                $label = $ref->getShortName() . '::' . $method->getName();
+                $label = $ref->getShortName().'::'.$method->getName();
                 if (in_array($label, self::NOT_DRIVABLE, true)) {
                     continue;
                 }
@@ -106,15 +101,15 @@ class EndpointCoverageTest extends TestCase
 
                 try {
                     $method->invokeArgs($api, $args);
-                } catch (Throwable $e) {
+                } catch (\Throwable $e) {
                     $this->fail(sprintf('%s could not be driven: %s', $label, $e->getMessage()));
                 }
 
-                $this->assertNotEmpty($history, $label . ' sent no request');
+                $this->assertNotEmpty($history, $label.' sent no request');
 
                 $request = $history[0]['request'];
                 $path = preg_replace('#^helix/#', '', ltrim($request->getUri()->getPath(), '/'));
-                $covered[$request->getMethod() . ' ' . $path][] = $label;
+                $covered[$request->getMethod().' '.$path][] = $label;
             }
         }
 
@@ -123,7 +118,7 @@ class EndpointCoverageTest extends TestCase
 
     public function testEveryDocumentedEndpointIsCovered(): void
     {
-        $documented = array_filter(array_map('trim', file(__DIR__ . '/endpoints.txt')));
+        $documented = array_filter(array_map('trim', file(__DIR__.'/endpoints.txt')));
         $covered = array_keys($this->drive());
 
         $missing = array_values(array_diff($documented, $covered));
@@ -138,7 +133,7 @@ class EndpointCoverageTest extends TestCase
 
     public function testNoEndpointIsCalledThatTwitchNoLongerDocuments(): void
     {
-        $documented = array_filter(array_map('trim', file(__DIR__ . '/endpoints.txt')));
+        $documented = array_filter(array_map('trim', file(__DIR__.'/endpoints.txt')));
         $covered = array_keys($this->drive());
 
         $undocumented = array_values(array_diff($covered, $documented));
@@ -154,7 +149,7 @@ class EndpointCoverageTest extends TestCase
 
     public function testEveryResourceClassIsReachableFromTheFacade(): void
     {
-        $dir = __DIR__ . '/../../src/Resources';
+        $dir = __DIR__.'/../../src/Resources';
         $api = new \TwitchApi\TwitchApi(
             new HelixGuzzleClient('TEST_CLIENT_ID'),
             'TEST_CLIENT_ID',
@@ -172,8 +167,8 @@ class EndpointCoverageTest extends TestCase
             if (substr($file, -4) !== '.php' || $file === 'AbstractResource.php') {
                 continue;
             }
-            $class = 'TwitchApi\\Resources\\' . substr($file, 0, -4);
-            $this->assertContains($class, $reachable, $class . ' has no getter on TwitchApi');
+            $class = 'TwitchApi\\Resources\\'.substr($file, 0, -4);
+            $this->assertContains($class, $reachable, $class.' has no getter on TwitchApi');
         }
     }
 }
