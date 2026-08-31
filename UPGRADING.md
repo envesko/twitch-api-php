@@ -52,7 +52,7 @@ request reaches Twitch carrying the wrong data. Those two are marked.
 ### The legacy NewTwitchApi namespace still works
 
 `NewTwitchApi\NewTwitchApi` and `NewTwitchApi\HelixGuzzleClient` have aliased
-their current equivalents since the rename in 6.0.0, and continue to in 8.0.
+their current equivalents since the rename in 6.0.0, and continue to in 8.0.0.
 They are two six-line classes, so there is no reason to make anyone rewrite
 imports for them in this release.
 
@@ -74,7 +74,7 @@ pagination cursors quietly stop advancing.
 // 7.x workaround. Remove it.
 $api->getSearchApi()->searchCategories($token, rawurlencode($term));
 
-// 8.0. Pass the raw value.
+// 8.0.0. Pass the raw value.
 $api->getSearchApi()->searchCategories($token, $term);
 ```
 
@@ -128,7 +128,7 @@ or UNSURE, with the file and line for every YES:
    `replaceStreamTags`, `getCodeStatus`, `redeemCode`,
    `createEntitlementGrantsUploadURL`, `getWebhooksApi`,
    `getWebhooksSubscriptionApi`, `WebhooksApi` and `WebhooksSubscriptionApi`.
-   All are gone in 8.0. The `NewTwitchApi\` namespace still works, so do not
+   All are gone in 8.0.0. The `NewTwitchApi\` namespace still works, so do not
    flag it.
 
 5. Untyped parameters now typed. Find calls to `getUserAccessToken`,
@@ -138,10 +138,10 @@ or UNSURE, with the file and line for every YES:
    than the one 8.0.0 declares. These used to be coerced silently.
 
 6. getAuthUrl output. Does any test or code compare the authorize URL as a
-   string? Its output is url encoded in 8.0.
+   string? Its output is url encoded in 8.0.0.
 
 7. refreshToken named argument. Is it ever called as
-   `refreshToken(refeshToken: ...)`? The misspelling is corrected in 8.0.
+   `refreshToken(refeshToken: ...)`? The misspelling is corrected in 8.0.0.
 
 8. Legacy namespace. ADVISORY, NOT BREAKING. Search for imports of
    `NewTwitchApi\`. These still work in 8.0.0 and nothing will break, but they
@@ -160,7 +160,7 @@ Finish with:
 <summary>Prompt: check, then patch my project for 8.0.0, one change at a time</summary>
 
 ```
-Upgrade this project to `envesko/twitch-api-php` 8.0.
+Upgrade this project to `envesko/twitch-api-php` 8.0.0.
 
 Phase one: report. Change nothing yet.
 

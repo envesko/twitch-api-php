@@ -147,7 +147,7 @@ seven things change behaviour and two of them fail silently.
 ### Known broken
 
 Real, and deliberately not fixed here because fixing them requires a breaking
-change. All are removed or repaired in 8.0.
+change. All are removed or repaired in 8.0.0.
 
 - `WebhooksSubscriptionApi` calls a static method that does not exist and is
   fatal when constructed without an explicit client. Twitch retired the
