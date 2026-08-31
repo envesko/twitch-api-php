@@ -163,25 +163,22 @@ class EndpointUrlTest extends TestCase
         $this->assertSent('GET', 'https://api.twitch.tv/helix/eventsub/subscriptions?status=enabled');
     }
 
-    public function testSearchCategoriesDoesNotEncodeTheQuery(): void
+    public function testSearchCategoriesEncodesTheQuery(): void
     {
-        // Known defect, fixed in 8.0: reserved characters in a value are not encoded, so
-        // this reaches Twitch as three parameters rather than one. Pinned deliberately;
-        // see RequestGeneratorTest for why it cannot be fixed in a minor release.
+        // The one endpoint where a value is routinely user-supplied free text.
         $this->api()->getSearchApi()->searchCategories('TOK', 'Rock & Roll');
 
-        $this->assertSent('GET', 'https://api.twitch.tv/helix/search/categories?query=Rock%20&%20Roll');
+        $this->assertSent('GET', 'https://api.twitch.tv/helix/search/categories?query=Rock%20%26%20Roll');
     }
 
-    public function testAPaginationCursorContainingAPlusIsCorrupted(): void
+    public function testAPaginationCursorSurvivesIntact(): void
     {
-        // Known defect, fixed in 8.0. Cursors are base64, so a + is common, and without
-        // encoding the receiving end reads it back as a space.
+        // Cursors are base64 and contain characters that must survive the query string.
         $this->api()->getStreamsApi()->getStreams('TOK', [], [], [], [], 20, null, 'eyJiIjpudWxsL+8=');
 
         parse_str((string) $this->lastRequest()->getUri()->getQuery(), $query);
 
-        $this->assertSame('eyJiIjpudWxsL 8=', $query['after']);
+        $this->assertSame('eyJiIjpudWxsL+8=', $query['after']);
     }
 
     // ------------------------------------------------------- write endpoints

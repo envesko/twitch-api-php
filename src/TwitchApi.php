@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace TwitchApi;
 
 use GuzzleHttp\Client;
+use Psr\Http\Client\ClientInterface;
 use TwitchApi\Auth\OauthApi;
 use TwitchApi\Resources\AdsApi;
 use TwitchApi\Resources\AnalyticsApi;
@@ -36,54 +37,56 @@ use TwitchApi\Resources\TagsApi;
 use TwitchApi\Resources\TeamsApi;
 use TwitchApi\Resources\UsersApi;
 use TwitchApi\Resources\VideosApi;
-use TwitchApi\Resources\WebhooksApi;
 use TwitchApi\Resources\WhispersApi;
-use TwitchApi\Webhooks\WebhooksSubscriptionApi;
 
 class TwitchApi
 {
-    private $helixGuzzleClient;
-    private $clientId;
-    private $clientSecret;
-    private $authGuzzleClient;
-    private $requestGenerator;
+    /**
+     * The union rather than HelixGuzzleClient alone, so a PSR-18 client can be injected
+     * through the facade and not only into the resource classes directly. Widening accepts
+     * everything the narrower type did, and PHP does not check constructor signatures
+     * against a parent, so no existing caller or subclass is affected.
+     */
+    private HelixGuzzleClient|ClientInterface $helixGuzzleClient;
+    private string $clientId;
+    private string $clientSecret;
+    private ?Client $authGuzzleClient = null;
+    private ?RequestGenerator $requestGenerator = null;
 
-    private $oauthApi;
-    private $adsApi;
-    private $analyticsApi;
-    private $bitsApi;
-    private $channelPointsApi;
-    private $channelsApi;
-    private $charityApi;
-    private $chatApi;
-    private $clipsApi;
-    private $entitlementsApi;
-    private $eventSubApi;
-    private $gamesApi;
-    private $goalsApi;
-    private $hypeTrainApi;
-    private $moderationApi;
-    private $pollsApi;
-    private $predictionsApi;
-    private $raidsApi;
-    private $scheduleApi;
-    private $searchApi;
-    private $streamsApi;
-    private $subscriptionsApi;
-    private $tagsApi;
-    private $teamsApi;
-    private $usersApi;
-    private $videosApi;
-    private $webhooksApi;
-    private $whispersApi;
-    private $webhooksSubscriptionApi;
-    private $conduitsApi;
-    private $contentClassificationLabelsApi;
-    private $extensionsApi;
-    private $guestStarApi;
-    private $sharedChatApi;
+    private ?OauthApi $oauthApi = null;
+    private ?AdsApi $adsApi = null;
+    private ?AnalyticsApi $analyticsApi = null;
+    private ?BitsApi $bitsApi = null;
+    private ?ChannelPointsApi $channelPointsApi = null;
+    private ?ChannelsApi $channelsApi = null;
+    private ?CharityApi $charityApi = null;
+    private ?ChatApi $chatApi = null;
+    private ?ClipsApi $clipsApi = null;
+    private ?EntitlementsApi $entitlementsApi = null;
+    private ?EventSubApi $eventSubApi = null;
+    private ?GamesApi $gamesApi = null;
+    private ?GoalsApi $goalsApi = null;
+    private ?HypeTrainApi $hypeTrainApi = null;
+    private ?ModerationApi $moderationApi = null;
+    private ?PollsApi $pollsApi = null;
+    private ?PredictionsApi $predictionsApi = null;
+    private ?RaidsApi $raidsApi = null;
+    private ?ScheduleApi $scheduleApi = null;
+    private ?SearchApi $searchApi = null;
+    private ?StreamsApi $streamsApi = null;
+    private ?SubscriptionsApi $subscriptionsApi = null;
+    private ?TagsApi $tagsApi = null;
+    private ?TeamsApi $teamsApi = null;
+    private ?UsersApi $usersApi = null;
+    private ?VideosApi $videosApi = null;
+    private ?WhispersApi $whispersApi = null;
+    private ?ConduitsApi $conduitsApi = null;
+    private ?ContentClassificationLabelsApi $contentClassificationLabelsApi = null;
+    private ?ExtensionsApi $extensionsApi = null;
+    private ?GuestStarApi $guestStarApi = null;
+    private ?SharedChatApi $sharedChatApi = null;
 
-    public function __construct(HelixGuzzleClient $helixGuzzleClient, string $clientId, string $clientSecret, ?Client $authGuzzleClient = null)
+    public function __construct(HelixGuzzleClient|ClientInterface $helixGuzzleClient, string $clientId, string $clientSecret, ?Client $authGuzzleClient = null)
     {
         $this->helixGuzzleClient = $helixGuzzleClient;
         $this->clientId = $clientId;
@@ -226,19 +229,9 @@ class TwitchApi
         return $this->videosApi ??= new VideosApi($this->helixGuzzleClient, $this->requestGenerator());
     }
 
-    public function getWebhooksApi(): WebhooksApi
-    {
-        return $this->webhooksApi ??= new WebhooksApi($this->helixGuzzleClient, $this->requestGenerator());
-    }
-
     public function getWhispersApi(): WhispersApi
     {
         return $this->whispersApi ??= new WhispersApi($this->helixGuzzleClient, $this->requestGenerator());
-    }
-
-    public function getWebhooksSubscriptionApi(): WebhooksSubscriptionApi
-    {
-        return $this->webhooksSubscriptionApi ??= new WebhooksSubscriptionApi($this->clientId, $this->clientSecret, $this->helixGuzzleClient);
     }
 
     public function getConduitsApi(): ConduitsApi

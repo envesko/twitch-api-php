@@ -112,7 +112,7 @@ class ChatApi extends AbstractResource
      * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference#send-chat-announcement
      */
-    public function sendChatAnnouncement(string $bearer, string $broadcasterId, string $moderatorId, string $message, ?string $color = null): ResponseInterface
+    public function sendChatAnnouncement(string $bearer, string $broadcasterId, string $moderatorId, string $message, ?string $color = null, ?bool $forSourceOnly = null): ResponseInterface
     {
         $queryParamsMap = $bodyParamsMap = [];
 
@@ -124,6 +124,10 @@ class ChatApi extends AbstractResource
 
         if ($color) {
             $bodyParamsMap[] = ['key' => 'color', 'value' => $color];
+        }
+
+        if (null !== $forSourceOnly) {
+            $bodyParamsMap[] = ['key' => 'for_source_only', 'value' => $forSourceOnly];
         }
 
         return $this->postApi('chat/announcements', $bearer, $queryParamsMap, $bodyParamsMap);
@@ -201,7 +205,7 @@ class ChatApi extends AbstractResource
      * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference/#send-chat-message
      */
-    public function sendChatMessage(string $bearer, string $broadcasterId, string $senderId, string $message, ?string $replyParentMessageId = null, ?string $sourceOnly = null): ResponseInterface
+    public function sendChatMessage(string $bearer, string $broadcasterId, string $senderId, string $message, ?string $replyParentMessageId = null, ?string $sourceOnly = null, ?bool $pin = null): ResponseInterface
     {
         $bodyParamsMap = [];
 
@@ -215,6 +219,10 @@ class ChatApi extends AbstractResource
 
         if ($sourceOnly) {
             $bodyParamsMap[] = ['key' => 'for_source_only', 'value' => $sourceOnly];
+        }
+
+        if (null !== $pin) {
+            $bodyParamsMap[] = ['key' => 'pin', 'value' => $pin];
         }
 
         return $this->postApi('chat/messages', $bearer, [], $bodyParamsMap);

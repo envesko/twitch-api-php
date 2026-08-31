@@ -51,11 +51,11 @@ class RequestGenerator
      * would result in
      * ?param_key=42&other_key=asdf
      *
-     * Values are NOT url encoded here, which is a known defect: a value containing
-     * &, + or # does not survive intact, and a caller-supplied value can append query
-     * parameters of its own. Encoding them is a breaking change for anyone who worked
-     * around this by pre-encoding, so it is deliberately held for 8.0 rather than
-     * changed in a minor release. See UPGRADING.md.
+     * Values are url encoded. Up to 7.x they were not, so a value containing &, + or #
+     * did not survive intact and a caller-supplied value could append query parameters
+     * of its own. That was left alone through 7.x because encoding it double-encodes
+     * anyone who worked around the defect by pre-encoding, which a minor release cannot
+     * do. See UPGRADING.md.
      */
     protected function generateQueryParams(array $queryParamsMap): string
     {
@@ -65,8 +65,13 @@ class RequestGenerator
                 if (is_bool($paramMap['value'])) {
                     $paramMap['value'] = (int) $paramMap['value'];
                 }
-                $format = is_int($paramMap['value']) ? '%d' : '%s';
-                $queryStringParams .= sprintf('&%s='.$format, $paramMap['key'], $paramMap['value']);
+                // rawurlencode rather than urlencode, so a space stays %20 and a literal
+                // plus is not silently read back as a space at the other end.
+                $queryStringParams .= sprintf(
+                    '&%s=%s',
+                    rawurlencode((string) $paramMap['key']),
+                    rawurlencode((string) $paramMap['value'])
+                );
             }
         }
 
@@ -82,6 +87,8 @@ class RequestGenerator
             }
         }
 
-        return json_encode($bodyParams);
+        // json_encode returns false on failure, which the declared string return type does
+        // not allow. An empty object is a truthful body for "nothing encodable".
+        return json_encode($bodyParams) ?: '{}';
     }
 }

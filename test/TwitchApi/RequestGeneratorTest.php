@@ -76,57 +76,46 @@ class RequestGeneratorTest extends TestCase
         );
     }
 
-    // --------------------------------------------------------------- known defect, fixed in 8.0
+    // --------------------------------------------------------------- encoding of reserved characters
     //
-    // Reserved characters in a value are NOT encoded. These assertions pin what 7.x does
-    // rather than what it should do, on purpose.
-    //
-    // Encoding them would silently double-encode any caller who worked around this by
-    // pre-encoding their values, which is a breaking change and cannot go in a minor
-    // release. It also cannot be detected: a value of "100%" has to become "100%25", which
-    // is indistinguishable from someone else's pre-encoding. So the fix waits for 8.0, and
-    // these tests exist so the behaviour cannot drift in either direction before then.
+    // Not encoded up to 7.x, which is why these read as a defect in that branch's history.
 
-    public function testAnAmpersandInAValueStartsANewParameter(): void
+    public function testAnAmpersandInAValueDoesNotStartANewParameter(): void
     {
-        // Twitch receives name=Rock, an empty parameter, and Roll.
         $this->assertSame(
-            'games?name=Rock%20&%20Roll',
+            'games?name=Rock%20%26%20Roll',
             $this->uri([['key' => 'name', 'value' => 'Rock & Roll']])
         );
     }
 
-    public function testAPlusInAValueIsNotPreserved(): void
+    public function testAPlusInAValueSurvives(): void
     {
-        // Pagination cursors are base64 and routinely contain +, which the receiving end
-        // decodes back as a space.
+        // Pagination cursors are base64 and routinely contain + and =.
         $this->assertSame(
-            'games?after=eyJiIjpudWxsL+8=',
+            'games?after=eyJiIjpudWxsL%2B8%3D',
             $this->uri([['key' => 'after', 'value' => 'eyJiIjpudWxsL+8=']])
         );
     }
 
-    public function testAHashInAValueBecomesAFragment(): void
+    public function testAHashInAValueDoesNotBecomeAFragment(): void
     {
-        // Everything after the # leaves the query string.
         $this->assertSame(
-            'games?name=C#%20tutorial',
+            'games?name=C%23%20tutorial',
             $this->uri([['key' => 'name', 'value' => 'C# tutorial']])
         );
     }
 
-    public function testAnEqualsInAValueIsNotEncoded(): void
+    public function testAnEqualsInAValueIsEncoded(): void
     {
-        $this->assertSame('games?name=a=b', $this->uri([['key' => 'name', 'value' => 'a=b']]));
+        $this->assertSame('games?name=a%3Db', $this->uri([['key' => 'name', 'value' => 'a=b']]));
     }
 
-    public function testAValueCanInjectAdditionalParameters(): void
+    public function testAValueCannotInjectAdditionalParameters(): void
     {
-        // The reason this is worth fixing at all: a caller passing user input here lets that
-        // user append query parameters to the outgoing Twitch request. It is bounded to the
-        // same endpoint, so it cannot redirect the request, but it is still wrong.
+        // Search terms are user input. Unencoded, a caller's user could append query
+        // parameters of their own to the outgoing Twitch request.
         $this->assertSame(
-            'games?name=x&first=100&after=evil',
+            'games?name=x%26first%3D100%26after%3Devil',
             $this->uri([['key' => 'name', 'value' => 'x&first=100&after=evil']])
         );
     }

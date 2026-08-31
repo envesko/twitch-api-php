@@ -5,10 +5,19 @@ declare(strict_types=1);
 namespace TwitchApi;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\BadResponseException;
+use Psr\Http\Client\ClientInterface;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use TwitchApi\Exception\ExceptionFactory;
 
-class HelixGuzzleClient
+class HelixGuzzleClient implements ClientInterface
 {
-    private $client;
+    private Client $client;
+
+    /** @var array<string, mixed> */
+    private array $config;
+
     private const BASE_URI = 'https://api.twitch.tv/helix/';
 
     public function __construct(string $clientId, array $config = [], ?string $baseUri = null)
@@ -52,16 +61,47 @@ class HelixGuzzleClient
         $client_config['headers'] = $headers;
         $client_config = array_merge($client_config, $config);
 
+        // Kept so getConfig() can answer without asking Guzzle. Guzzle deprecated
+        // Client::getConfig() in 7.9 and removed it in 8, and this class supports both.
+        $this->config = $client_config;
         $this->client = new Client($client_config);
     }
 
-    public function getConfig($option = null)
+    /**
+     * @return mixed the whole configuration, or one option from it
+     */
+    public function getConfig(?string $option = null)
     {
-        return $this->client->getConfig($option);
+        if ($option === null) {
+            return $this->config;
+        }
+
+        return $this->config[$option] ?? null;
     }
 
-    public function send($request)
+    /**
+     * PSR-18 entry point.
+     *
+     * PSR-18 requires that a response is returned whatever its status, so this does not throw
+     * on a 4xx or 5xx the way send() does. Use send() to keep the exception behaviour the
+     * resource classes rely on.
+     */
+    public function sendRequest(RequestInterface $request): ResponseInterface
     {
-        return $this->client->send($request);
+        return $this->client->send($request, ['http_errors' => false]);
+    }
+
+    /**
+     * Sends the request, raising a typed exception on an error status.
+     */
+    public function send(RequestInterface $request): ResponseInterface
+    {
+        try {
+            return $this->client->send($request);
+        } catch (BadResponseException $e) {
+            // Rethrown as the typed equivalent, which extends the Guzzle class it replaces,
+            // so an existing catch for GuzzleException still matches.
+            throw ExceptionFactory::from($e);
+        }
     }
 }

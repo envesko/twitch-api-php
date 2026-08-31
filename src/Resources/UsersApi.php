@@ -55,29 +55,6 @@ class UsersApi extends AbstractResource
 
     /**
      * @throws GuzzleException
-     * @link https://dev.twitch.tv/docs/api/reference/#get-users-follows
-     */
-    public function getUsersFollows(string $bearer, ?string $followerId = null, ?string $followedUserId = null, ?int $first = null, ?string $after = null): ResponseInterface
-    {
-        $queryParamsMap = [];
-        if ($followerId) {
-            $queryParamsMap[] = ['key' => 'from_id', 'value' => $followerId];
-        }
-        if ($followedUserId) {
-            $queryParamsMap[] = ['key' => 'to_id', 'value' => $followedUserId];
-        }
-        if ($first) {
-            $queryParamsMap[] = ['key' => 'first', 'value' => $first];
-        }
-        if ($after) {
-            $queryParamsMap[] = ['key' => 'after', 'value' => $after];
-        }
-
-        return $this->getApi('users/follows', $bearer, $queryParamsMap);
-    }
-
-    /**
-     * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference/#get-user-extensions
      */
     public function getUserExtensions(string $bearer): ResponseInterface

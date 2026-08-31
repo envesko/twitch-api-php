@@ -38,7 +38,7 @@ class PollsApi extends AbstractResource
      * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference#create-poll
      */
-    public function createPoll(string $bearer, string $broadcasterId, string $title, array $choices, int $duration, $optionalBodyParams = []): ResponseInterface
+    public function createPoll(string $bearer, string $broadcasterId, string $title, array $choices, int $duration, array $optionalBodyParams = []): ResponseInterface
     {
         $bodyParamsMap = [];
 

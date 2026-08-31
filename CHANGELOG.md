@@ -9,7 +9,91 @@ Entries from 7.3.0 onward are written as the work happens. Earlier entries are
 summarised from release tags and commit history after the fact, so they record
 what a release contained rather than every change in it.
 
+Unreleased work accumulates under `## [Unreleased]`. Releasing means renaming
+that heading to the version and date; a tag pushed without that rename fails
+CI. See the release section of [CONTRIBUTING.md](CONTRIBUTING.md).
+
 ## [Unreleased]
+
+## [8.0.0] - 2026-08-31
+
+Minimum PHP is now 8.3. Read [UPGRADING.md](UPGRADING.md) before taking this:
+seven things change behaviour and two of them fail silently.
+
+### Removed
+
+- Seven methods calling endpoints Twitch has withdrawn, which were failing at
+  the API rather than here: `UsersApi::getUsersFollows()`,
+  `HypeTrainApi::getHypeTrainEvents()`, `TagsApi::replaceStreamTags()`,
+  `WebhooksApi` in full, and the three code redemption methods on
+  `EntitlementsApi`.
+- `WebhooksSubscriptionApi`, which wrapped the webhooks/hub endpoint retired in
+  2021 and was fatal on construction. Use `EventSubApi`.
+- `src/NewTwitchApi.php`, which declared a namespace that did not match its
+  path and could never be autoloaded. The working `NewTwitchApi\` aliases are
+  untouched and still deprecated.
+- phpspec. Its newest release supports PHP 8.3 at most, so it could not run on
+  the versions this release targets.
+
+### Added
+
+- Typed exceptions: `AuthenticationException`, `AuthorizationException`,
+  `NotFoundException`, `RateLimitException` and `ServerException`, all
+  implementing `TwitchApiException`. They extend the Guzzle exceptions they
+  replace, so existing catch blocks keep working.
+- `RateLimit`, reading the rate limit headers every Helix response carries and
+  the library previously discarded. `RateLimitException::getRetryAfter()` gives
+  the seconds to wait.
+- `Paginator`, for cursor-paginated endpoints.
+- PSR-18 support. Any PSR-18 client can be injected, and `HelixGuzzleClient`
+  implements the interface itself.
+- `OauthApi::revokeToken()`, and the device code grant flow via
+  `getDeviceCode()` and `getDeviceAccessToken()`.
+- An opt-in replay window on `EventSubApi::verifySignature()`.
+- An optional `$baseUri` on the `OauthApi` constructor, so the token endpoint
+  can be pointed at a local double in tests.
+- Five optional parameters Twitch added to existing endpoints since 7.2.0:
+  `subscription_id` and `conduit_id` on Get EventSub Subscriptions, `pin` on
+  Send Chat Message, `for_source_only` on Send Chat Announcement, and
+  `is_featured` on Get Clips.
+
+### Fixed
+
+- Query parameter values are url encoded. A value containing `&`, `+` or `#`
+  did not reach Twitch intact, and caller-supplied input could append query
+  parameters of its own to the request. Held back from 7.3.0 because it is
+  breaking.
+- `OauthApi::getAuthUrl()` builds its query with `http_build_query`. A
+  space-separated scope list or a redirect URI carrying a query string produced
+  a malformed URL.
+- `isValidAccessToken()` returns false for a rejected token. It could only ever
+  return true or throw, because Guzzle raises on a 4xx before the status code
+  can be read.
+- Three parameters declared optional before a required one, which PHP has
+  reported as deprecated since PHP 8.0.
+- `OauthApi::refreshToken()` no longer misspells its parameter.
+
+### Changed
+
+- The Guzzle constraint is `^7.15.2|^8.0`. The old range allowed Guzzle 6,
+  which is end of life, and 7.x releases carrying nine advisories.
+- Properties and parameters are typed throughout. PHPStan runs at level 8. One
+  of these is a silent change rather than a `TypeError`:
+  `SearchApi::searchChannels()` now declares `?bool $liveOnly`, and a string
+  passed there coerces to true. See UPGRADING.md.
+- `TwitchApi` accepts any PSR-18 client, not only `HelixGuzzleClient`. The
+  resource classes already did; the facade is the documented way in and now
+  matches.
+- The test suite is PHPUnit 11 alone: 580 tests, up from 342 phpspec examples
+  and 2 tests.
+
+### Deprecated
+
+- The `NewTwitchApi\` namespace, now carrying `@deprecated` so an IDE or static
+  analyser says so too. It has aliased `TwitchApi\` since 6.0.0 and still works,
+  but 8.0.0 is the last release guaranteed to carry it.
+
+## [7.3.0] - 2026-08-31
 
 ### Added
 
@@ -72,7 +156,7 @@ what a release contained rather than every change in it.
 ### Known broken
 
 Real, and deliberately not fixed here because fixing them requires a breaking
-change. All are removed or repaired in 8.0.
+change. All are removed or repaired in 8.0.0.
 
 - `WebhooksSubscriptionApi` calls a static method that does not exist and is
   fatal when constructed without an explicit client. Twitch retired the
@@ -81,14 +165,14 @@ change. All are removed or repaired in 8.0.
   is fatal to autoload.
 - `ScheduleApi::getChanneliCalendar()` and two private EventSub helpers declare
   an optional parameter before a required one, which PHP has reported as
-  deprecated since 8.0. Fixing it reorders parameters.
+  deprecated since PHP 8.0. Fixing it reorders parameters.
 - Query parameter values are interpolated into the URL unencoded. A value
   containing `&` splits into extra parameters, a base64 pagination cursor is
   corrupted because its `+` decodes as a space, a `#` truncates the value into
   a URI fragment, and a user-supplied search term can append query parameters
   of its own to the outgoing request. Encoding them would double-encode any
   consumer who worked around this by pre-encoding, which is a breaking change,
-  so it is held for 8.0 rather than shipped in a minor release.
+  so it is held for 8.0.0 rather than shipped in a minor release.
 - `OauthApi::getAuthUrl()` does not encode its query parameters, for the same
   reason.
 - Six methods call endpoints Twitch has withdrawn.

@@ -11,27 +11,6 @@ class HypeTrainApi extends AbstractResource
 {
     /**
      * @throws GuzzleException
-     * @link https://dev.twitch.tv/docs/api/reference#get-hype-train-events
-     */
-    public function getHypeTrainEvents(string $bearer, string $broadcasterId, ?int $first = null, ?string $cursor = null): ResponseInterface
-    {
-        $queryParamsMap = [];
-
-        $queryParamsMap[] = ['key' => 'broadcaster_id', 'value' => $broadcasterId];
-
-        if ($first) {
-            $queryParamsMap[] = ['key' => 'first', 'value' => $first];
-        }
-
-        if ($cursor) {
-            $queryParamsMap[] = ['key' => 'cursor', 'value' => $cursor];
-        }
-
-        return $this->getApi('hypetrain/events', $bearer, $queryParamsMap);
-    }
-
-    /**
-     * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference/#get-hype-train-status
      *
      * Replaces getHypeTrainEvents, whose endpoint Twitch withdrew.

@@ -1,28 +1,28 @@
 parameters:
-    level: 5
+    level: 8
     paths:
         - src
 
-    excludePaths:
-        # Legacy namespace shim from the v4 rename. It declares a namespace that does not
-        # match its PSR-4 path and extends a class that does not exist, so it is fatal to
-        # autoload and unanalysable. PHPStan treats the resulting class.notFound as
-        # non-ignorable, so it has to be excluded rather than baselined. Deleted in v8,
-        # along with src/NewTwitchApi/.
-        - src/NewTwitchApi.php
 
     # Pinned so results do not depend on which PHP the analyser happens to run on, and
     # checked across the whole supported range rather than one version, which is what
-    # catches syntax or behaviour valid on 8.x but broken on the 7.4 floor.
+    # catches syntax or behaviour valid on the newest supported version but broken on the 8.3 floor.
     #
     # Version-specific deprecations that only apply at part of this range are not reported
     # here. Those are covered at runtime instead by bin/check-deprecations.php, which runs
     # on the actual PHP under test.
     phpVersion:
-        min: 70400
-        max: 80400
+        min: 80300
+        max: 80500
 
     treatPhpDocTypesAsCertain: false
+
+    # Array shapes are not documented across the resource classes yet, so every array
+    # parameter reports at level 6 and above. Those are a documentation gap rather than a
+    # correctness one, and silencing them by identifier keeps the rest of level 8, which is
+    # where the null-safety checks live. Removing this line is the next static-analysis job.
+    ignoreErrors:
+        - identifier: missingType.iterableValue
 
 includes:
     - phpstan-baseline.neon

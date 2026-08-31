@@ -1,0 +1,32 @@
+---
+name: Release checks
+
+# 7.3.0 was tagged with its changelog entry still under "## [Unreleased]".
+# This runs on the tag, so a release cannot go out that way again.
+
+on:
+  push:
+    tags:
+    - 'v*'
+
+# The job only reads the repository. Without this it inherits the
+# default token permissions, which on a public repo is read but on a private
+# one is read and write for every scope.
+permissions:
+  contents: read
+
+jobs:
+  changelog:
+    name: Changelog entry
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+
+      - name: Check the changelog names this version
+        run: php bin/check-changelog.php "${GITHUB_REF_NAME}"

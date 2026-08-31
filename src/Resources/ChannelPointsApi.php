@@ -79,7 +79,7 @@ class ChannelPointsApi extends AbstractResource
      * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference#create-custom-rewards
      */
-    public function createCustomReward(string $bearer, string $broadcasterId, string $title, int $cost, $additionalBodyParams = []): ResponseInterface
+    public function createCustomReward(string $bearer, string $broadcasterId, string $title, int $cost, array $additionalBodyParams = []): ResponseInterface
     {
         // $additionalBodyParams should be a standard key => value format, eg. ['game_id' => '1'];
         $queryParamsMap = $bodyParamsMap = [];
@@ -100,7 +100,7 @@ class ChannelPointsApi extends AbstractResource
      * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference#update-custom-reward
      */
-    public function updateCustomReward(string $bearer, string $broadcasterId, string $rewardId, $bodyParams = []): ResponseInterface
+    public function updateCustomReward(string $bearer, string $broadcasterId, string $rewardId, array $bodyParams = []): ResponseInterface
     {
         // $bodyParams should be a standard key => value format, eg. ['game_id' => '1'];
         $queryParamsMap = $bodyParamsMap = [];

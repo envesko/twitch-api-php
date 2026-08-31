@@ -12,17 +12,17 @@ class ClipsApi extends AbstractResource
     /**
      * @throws GuzzleException
      */
-    public function getClipsByBroadcasterId(string $bearer, string $broadcasterId, ?int $first = null, ?string $before = null, ?string $after = null, ?string $startedAt = null, ?string $endedAt = null): ResponseInterface
+    public function getClipsByBroadcasterId(string $bearer, string $broadcasterId, ?int $first = null, ?string $before = null, ?string $after = null, ?string $startedAt = null, ?string $endedAt = null, ?bool $isFeatured = null): ResponseInterface
     {
-        return $this->getClips($bearer, $broadcasterId, null, null, $first, $before, $after, $startedAt, $endedAt);
+        return $this->getClips($bearer, $broadcasterId, null, null, $first, $before, $after, $startedAt, $endedAt, $isFeatured);
     }
 
     /**
      * @throws GuzzleException
      */
-    public function getClipsByGameId(string $bearer, string $gameId, ?int $first = null, ?string $before = null, ?string $after = null, ?string $startedAt = null, ?string $endedAt = null): ResponseInterface
+    public function getClipsByGameId(string $bearer, string $gameId, ?int $first = null, ?string $before = null, ?string $after = null, ?string $startedAt = null, ?string $endedAt = null, ?bool $isFeatured = null): ResponseInterface
     {
-        return $this->getClips($bearer, null, $gameId, null, $first, $before, $after, $startedAt, $endedAt);
+        return $this->getClips($bearer, null, $gameId, null, $first, $before, $after, $startedAt, $endedAt, $isFeatured);
     }
 
     /**
@@ -37,7 +37,7 @@ class ClipsApi extends AbstractResource
      * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference#get-clips
      */
-    public function getClips(string $bearer, ?string $broadcasterId = null, ?string $gameId = null, ?string $clipIds = null, ?int $first = null, ?string $before = null, ?string $after = null, ?string $startedAt = null, ?string $endedAt = null): ResponseInterface
+    public function getClips(string $bearer, ?string $broadcasterId = null, ?string $gameId = null, ?string $clipIds = null, ?int $first = null, ?string $before = null, ?string $after = null, ?string $startedAt = null, ?string $endedAt = null, ?bool $isFeatured = null): ResponseInterface
     {
         $queryParamsMap = [];
         if ($broadcasterId) {
@@ -63,6 +63,9 @@ class ClipsApi extends AbstractResource
         }
         if ($endedAt) {
             $queryParamsMap[] = ['key' => 'ended_at', 'value' => $endedAt];
+        }
+        if (null !== $isFeatured) {
+            $queryParamsMap[] = ['key' => 'is_featured', 'value' => $isFeatured];
         }
 
         return $this->getApi('clips', $bearer, $queryParamsMap);
