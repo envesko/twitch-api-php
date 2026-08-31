@@ -45,3 +45,25 @@ jobs:
 
       - name: Run tests
         run: make test
+
+  lowest:
+    name: "Lowest supported dependencies"
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+
+      # composer.json promises Guzzle from 7.15.2 and psr/http-message from 1.1
+      # upward, but a normal install always resolves the newest of each, so the
+      # bottom of every range goes untested. A consumer pinned there by another
+      # package would be the first to run it.
+      - name: Install the oldest allowed versions of every dependency
+        run: composer update --prefer-lowest --prefer-stable --no-interaction
+
+      - name: Run tests
+        run: make test
