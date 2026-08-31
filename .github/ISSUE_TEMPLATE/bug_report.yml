@@ -1,0 +1,41 @@
+name: Bug report
+description: A request behaves differently to the Twitch API reference
+labels: ["bug"]
+body:
+  - type: input
+    id: library-version
+    attributes:
+      label: Library version
+      placeholder: "7.3.0"
+    validations:
+      required: true
+  - type: input
+    id: php-version
+    attributes:
+      label: PHP version
+      placeholder: "8.3.14"
+    validations:
+      required: true
+  - type: input
+    id: endpoint
+    attributes:
+      label: Endpoint or method
+      description: Which library method, or which Helix endpoint
+      placeholder: "StreamsApi::getStreams, GET /helix/streams"
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected, and what happened
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Code that reproduces it
+      render: php
+  - type: textarea
+    id: response
+    attributes:
+      label: Response from Twitch
+      description: Status code and body. Remove your tokens and client secret first.
+      render: json

@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions about the Twitch API itself
+    url: https://link.twitch.tv/devchat
+    about: The TwitchDev Discord is the right place for API behaviour, scopes and rate limits.
+  - name: Twitch API community Discord
+    url: https://discord.gg/PKE8cPA3zb
+    about: Community help with using the API from PHP.
+  - name: Report a security vulnerability
+    url: https://github.com/envesko/twitch-api-php/security/advisories/new
+    about: Please report privately rather than in a public issue.
