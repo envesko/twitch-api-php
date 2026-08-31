@@ -46,7 +46,7 @@ class ScheduleApi extends AbstractResource
      * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference/#get-channel-icalendar
      */
-    public function getChanneliCalendar(?string $bearer = null, string $broadcasterId): ResponseInterface
+    public function getChanneliCalendar(?string $bearer, string $broadcasterId): ResponseInterface
     {
         // This endpoint at the time of addition does not require any authorization, so the bearer is null.
         // However, to prevent a breaking update in the future, it will remain the first function parameter.

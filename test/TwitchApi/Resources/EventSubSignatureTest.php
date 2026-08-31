@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TwitchApi\Tests\Resources;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use TwitchApi\HelixGuzzleClient;
 use TwitchApi\RequestGenerator;
@@ -78,9 +79,7 @@ class EventSubSignatureTest extends TestCase
         ));
     }
 
-    /**
-     * @dataProvider malformedSignatures
-     */
+    #[DataProvider('malformedSignatures')]
     public function testAMalformedSignatureIsRejectedRatherThanFatal(string $signature): void
     {
         // Each of these previously reached explode() and left the hash element undefined,

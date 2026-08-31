@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TwitchApi\Tests;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use TwitchApi\HelixGuzzleClient;
 use TwitchApi\TwitchApi;
@@ -24,17 +25,13 @@ class TwitchApiTest extends TestCase
         );
     }
 
-    /**
-     * @dataProvider getters
-     */
+    #[DataProvider('getters')]
     public function testGetterReturnsItsResource(string $getter, string $class): void
     {
         $this->assertInstanceOf($class, $this->api()->$getter());
     }
 
-    /**
-     * @dataProvider getters
-     */
+    #[DataProvider('getters')]
     public function testGetterReturnsTheSameInstanceEachTime(string $getter, string $class): void
     {
         $api = $this->api();

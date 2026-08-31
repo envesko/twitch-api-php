@@ -568,7 +568,7 @@ class EventSubApi extends AbstractResource
         );
     }
 
-    private function subscribeToChannelPointsCustomReward(string $bearer, string $secret, string $callback, string $twitchId, ?string $rewardId = null, string $eventType): ResponseInterface
+    private function subscribeToChannelPointsCustomReward(string $bearer, string $secret, string $callback, string $twitchId, ?string $rewardId, string $eventType): ResponseInterface
     {
         $condition = ['broadcaster_user_id' => $twitchId];
 
@@ -586,7 +586,7 @@ class EventSubApi extends AbstractResource
         );
     }
 
-    private function subscribeToChannelPointsCustomRewardRedemption(string $bearer, string $secret, string $callback, string $twitchId, ?string $rewardId = null, string $eventType): ResponseInterface
+    private function subscribeToChannelPointsCustomRewardRedemption(string $bearer, string $secret, string $callback, string $twitchId, ?string $rewardId, string $eventType): ResponseInterface
     {
         $condition = ['broadcaster_user_id' => $twitchId];
 
