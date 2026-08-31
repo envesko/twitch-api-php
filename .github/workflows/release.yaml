@@ -9,6 +9,12 @@ on:
     tags:
     - 'v*'
 
+# The job only reads the repository. Without this it inherits the
+# default token permissions, which on a public repo is read but on a private
+# one is read and write for every scope.
+permissions:
+  contents: read
+
 jobs:
   changelog:
     name: Changelog entry

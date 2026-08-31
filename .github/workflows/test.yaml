@@ -9,6 +9,12 @@ on:
     branches:
     - master
 
+# Both jobs only read the repository. Without this, the workflow inherits the
+# default token permissions, which on a public repo is read but on a private
+# one is read and write for every scope.
+permissions:
+  contents: read
+
 jobs:
   test:
     name: "PHP ${{ matrix.php }}"
