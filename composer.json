@@ -13,20 +13,18 @@
   "license": "MIT",
   "authors": [
     {
+      "name": "Envesko",
+      "email": "contact@envesko.com",
+      "homepage": "https://envesko.com",
+      "role": "Maintainer"
+    },
+    {
       "name": "Nicholas Law",
-      "homepage": "https://github.com/nicklaw5",
       "role": "Original author"
     },
     {
       "name": "Brian Zwahr",
-      "homepage": "https://github.com/echosa",
-      "role": "Contributor"
-    },
-    {
-      "name": "Brandin",
-      "email": "contact@envesko.com",
-      "homepage": "https://envesko.com",
-      "role": "Maintainer"
+      "role": "Original contributor"
     }
   ],
   "support": {
