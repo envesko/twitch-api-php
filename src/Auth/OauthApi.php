@@ -12,15 +12,24 @@ use Psr\Http\Message\ResponseInterface;
 
 class OauthApi
 {
-    private $clientId;
-    private $clientSecret;
-    private $guzzleClient;
+    private const BASE_URI = 'https://id.twitch.tv/oauth2/';
 
-    public function __construct(string $clientId, string $clientSecret, ?Client $guzzleClient = null)
+    private string $clientId;
+    private string $clientSecret;
+    private Client $guzzleClient;
+    private string $baseUri;
+
+    /**
+     * $baseUri is only used to build the absolute authorization URL. It used to be read back
+     * off the Guzzle client, which Guzzle 8 no longer allows. Pass it if you also passed a
+     * client with a non-default base URI.
+     */
+    public function __construct(string $clientId, string $clientSecret, ?Client $guzzleClient = null, ?string $baseUri = null)
     {
         $this->clientId = $clientId;
         $this->clientSecret = $clientSecret;
         $this->guzzleClient = $guzzleClient ?? AuthGuzzleClient::getClient();
+        $this->baseUri = $baseUri ?? self::BASE_URI;
     }
 
     /**
@@ -30,7 +39,7 @@ class OauthApi
     {
         return sprintf(
             '%s%s',
-            $this->guzzleClient->getConfig('base_uri'),
+            $this->baseUri,
             $this->getPartialAuthUrl($redirectUri, $responseType, $scope, $forceVerify, $state)
         );
     }
@@ -38,7 +47,7 @@ class OauthApi
     /**
      * @throws GuzzleException
      */
-    public function getUserAccessToken($code, string $redirectUri, $state = null): ResponseInterface
+    public function getUserAccessToken(string $code, string $redirectUri, ?string $state = null): ResponseInterface
     {
         return $this->makeRequest(
             new Request('POST', 'token'),

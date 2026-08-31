@@ -63,7 +63,7 @@ class ScheduleApi extends AbstractResource
      * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference/#update-channel-stream-schedule
      */
-    public function updateChannelStreamSchedule(string $bearer, string $broadcasterId, ?bool $isVacationEnabled = null, $vacationStartTime = null, $vacationEndTime = null, $timezone = null): ResponseInterface
+    public function updateChannelStreamSchedule(string $bearer, string $broadcasterId, ?bool $isVacationEnabled = null, ?string $vacationStartTime = null, ?string $vacationEndTime = null, ?string $timezone = null): ResponseInterface
     {
         $queryParamsMap = [];
 

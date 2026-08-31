@@ -11,8 +11,8 @@ use TwitchApi\RequestGenerator;
 
 abstract class AbstractResource
 {
-    protected $guzzleClient;
-    private $requestGenerator;
+    protected HelixGuzzleClient $guzzleClient;
+    private RequestGenerator $requestGenerator;
 
     public function __construct(HelixGuzzleClient $guzzleClient, RequestGenerator $requestGenerator)
     {

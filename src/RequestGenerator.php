@@ -87,6 +87,8 @@ class RequestGenerator
             }
         }
 
-        return json_encode($bodyParams);
+        // json_encode returns false on failure, which the declared string return type does
+        // not allow. An empty object is a truthful body for "nothing encodable".
+        return json_encode($bodyParams) ?: '{}';
     }
 }

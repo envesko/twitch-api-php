@@ -1,7 +1,2 @@
 parameters:
-	ignoreErrors:
-		-
-			message: '#^Call to an undefined static method TwitchApi\\HelixGuzzleClient\:\:getClient\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: src/Webhooks/WebhooksSubscriptionApi.php
+	ignoreErrors: []

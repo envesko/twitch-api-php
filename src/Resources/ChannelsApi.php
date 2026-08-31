@@ -39,7 +39,7 @@ class ChannelsApi extends AbstractResource
      * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference#modify-channel-information
      */
-    public function modifyChannelInfo(string $bearer, string $broadcasterId, $bodyParams = []): ResponseInterface
+    public function modifyChannelInfo(string $bearer, string $broadcasterId, array $bodyParams = []): ResponseInterface
     {
         // $bodyParams should be a standard key => value format, eg. ['game_id' => '1'];
         $queryParamsMap = $bodyParamsMap = [];
