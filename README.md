@@ -12,12 +12,12 @@ This is a maintained fork of
 continued by [Envesko](https://github.com/envesko) with the full history and
 all original attribution intact.
 
-The original library is the work of Nicholas Law, with substantial
-contributions from Brian Zwahr and everyone who sent a pull request over the
-years. It has been downloaded hundreds
-of thousands of times and has been the default way to reach the Twitch API from
-PHP for the better part of a decade. This fork exists because that work deserves
-to keep running, not because there was anything wrong with it. Thank you.
+The original library is the work of Nicholas Law, with substantial contributions
+from Brian Zwahr and everyone who sent a pull request over the years. It has been
+downloaded hundreds of thousands of times and has been the default way to reach
+the Twitch API from PHP for the better part of a decade. This fork exists because
+that work deserves to keep running, not because there was anything wrong with it.
+Thank you.
 
 Upstream has been quiet since June 2023. Since then Twitch has shipped Conduits,
 Guest Star, Shared Chat, chat pins, the moderation warning and unban-request
