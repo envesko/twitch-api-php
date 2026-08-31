@@ -1,7 +1,7 @@
 {
-  "name": "nicklaw5/twitch-api-php",
+  "name": "envesko/twitch-api-php",
   "type": "library",
-  "description": "A Twitch API client for PHP.",
+  "description": "A Twitch API client for PHP. A maintained, drop-in compatible fork of nicklaw5/twitch-api-php.",
   "keywords": [
     "twitch",
     "twitch.tv",
@@ -9,22 +9,32 @@
     "twitch-api",
     "api"
   ],
-  "homepage": "http://github.com/nicklaw5/twitch-api-php",
+  "homepage": "https://github.com/envesko/twitch-api-php",
   "license": "MIT",
   "authors": [
     {
       "name": "Nicholas Law",
-      "homepage": "https://github.com/nicklaw5"
+      "homepage": "https://github.com/nicklaw5",
+      "role": "Original author"
     },
     {
       "name": "Brian Zwahr",
-      "homepage": "https://github.com/echosa"
+      "homepage": "https://github.com/echosa",
+      "role": "Contributor"
     },
     {
       "name": "Brandin Arsenault",
-      "homepage": "https://github.com/brandinarsenault"
+      "homepage": "https://github.com/brandinarsenault",
+      "role": "Maintainer"
     }
   ],
+  "support": {
+    "issues": "https://github.com/envesko/twitch-api-php/issues",
+    "source": "https://github.com/envesko/twitch-api-php"
+  },
+  "replace": {
+    "nicklaw5/twitch-api-php": "*"
+  },
   "require": {
     "php": ">=7.4.0",
     "ext-json": "*",
