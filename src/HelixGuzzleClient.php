@@ -31,6 +31,25 @@ class HelixGuzzleClient
         // base URI and Client-ID rather than replacing them. Discarding those whenever a
         // handler was present left every consumer that wired in retry or logging middleware
         // sending relative URLs with no Client-ID, which Twitch rejects.
+        //
+        // Headers merge per header rather than wholesale. A caller adding a User-Agent is
+        // not asking to drop the Client-ID, but a plain array_merge replaces the whole array
+        // and does exactly that, which Twitch answers with "Client ID and OAuth token do not
+        // match". Overriding an individual header still works, case-insensitively.
+        $callerHeaders = $config['headers'] ?? [];
+        unset($config['headers']);
+
+        foreach ($callerHeaders as $name => $value) {
+            foreach (array_keys($headers) as $existing) {
+                if (strcasecmp($existing, $name) === 0) {
+                    unset($headers[$existing]);
+                }
+            }
+
+            $headers[$name] = $value;
+        }
+
+        $client_config['headers'] = $headers;
         $client_config = array_merge($client_config, $config);
 
         $this->client = new Client($client_config);

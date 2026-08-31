@@ -73,6 +73,45 @@ class EndpointUrlTest extends TestCase
         $this->assertSame('TEST_CLIENT_ID', $this->lastRequest()->getHeaderLine('Client-ID'));
     }
 
+    public function testClientIdSurvivesCallerSuppliedHeaders(): void
+    {
+        // Reported upstream as "Client ID and OAuth token do not match": adding any header of
+        // your own, a User-Agent say, replaced the whole header array and took the Client-ID
+        // with it, so Twitch rejected every Helix call with a 401.
+        $this->history = [];
+        $stack = HandlerStack::create(new MockHandler([new Response(200, [], '{"data":[]}')]));
+        $stack->push(Middleware::history($this->history));
+
+        $client = new HelixGuzzleClient('TEST_CLIENT_ID', [
+            'handler' => $stack,
+            'headers' => ['User-Agent' => 'my-app/1.0'],
+        ]);
+
+        (new TwitchApi($client, 'TEST_CLIENT_ID', 'TEST_CLIENT_SECRET'))
+            ->getUsersApi()->getUserByAccessToken('USER_TOKEN');
+
+        $this->assertSame('TEST_CLIENT_ID', $this->lastRequest()->getHeaderLine('Client-ID'));
+        $this->assertSame('my-app/1.0', $this->lastRequest()->getHeaderLine('User-Agent'));
+    }
+
+    public function testCallerCanStillOverrideAHeaderWhateverItsCase(): void
+    {
+        $this->history = [];
+        $stack = HandlerStack::create(new MockHandler([new Response(200, [], '{"data":[]}')]));
+        $stack->push(Middleware::history($this->history));
+
+        $client = new HelixGuzzleClient('DEFAULT_ID', [
+            'handler' => $stack,
+            'headers' => ['client-id' => 'OVERRIDDEN'],
+        ]);
+
+        (new TwitchApi($client, 'DEFAULT_ID', 'TEST_CLIENT_SECRET'))
+            ->getUsersApi()->getUserByAccessToken('USER_TOKEN');
+
+        // One header, not two differing only by case.
+        $this->assertSame(['OVERRIDDEN'], $this->lastRequest()->getHeader('Client-ID'));
+    }
+
     public function testBearerTokenIsSent(): void
     {
         $this->api()->getUsersApi()->getUserById('TOK', '123');
