@@ -50,6 +50,12 @@ class RequestGenerator
      * [['key' => 'param_key', 'value' => 42],['key' => 'other_key', 'value' => 'asdf']]
      * would result in
      * ?param_key=42&other_key=asdf
+     *
+     * Values are NOT url encoded here, which is a known defect: a value containing
+     * &, + or # does not survive intact, and a caller-supplied value can append query
+     * parameters of its own. Encoding them is a breaking change for anyone who worked
+     * around this by pre-encoding, so it is deliberately held for 8.0 rather than
+     * changed in a minor release. See UPGRADING.md.
      */
     protected function generateQueryParams(array $queryParamsMap): string
     {
@@ -59,18 +65,8 @@ class RequestGenerator
                 if (is_bool($paramMap['value'])) {
                     $paramMap['value'] = (int) $paramMap['value'];
                 }
-
-                // Values reach here straight from the caller, so they can hold anything a
-                // Twitch field allows: a game title containing & or #, a base64 pagination
-                // cursor containing + and =, or a search term typed by the caller's own user.
-                // Interpolating those raw truncates the value or appends parameters nobody
-                // asked for. rawurlencode is used rather than urlencode so a space stays %20,
-                // which is what the URI already produced before this was escaped at all.
-                $queryStringParams .= sprintf(
-                    '&%s=%s',
-                    rawurlencode((string) $paramMap['key']),
-                    rawurlencode((string) $paramMap['value'])
-                );
+                $format = is_int($paramMap['value']) ? '%d' : '%s';
+                $queryStringParams .= sprintf('&%s='.$format, $paramMap['key'], $paramMap['value']);
             }
         }
 

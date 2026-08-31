@@ -22,25 +22,7 @@ There are no breaking changes. The public surface went from 217 methods to 310.
 Nothing was removed and no signature changed, which is checked by comparing a
 reflection dump of both releases.
 
-### Four things that behave differently
-
-#### Query parameters are now URL encoded
-
-Values were previously written into the query string as-is. If you passed a
-value containing `&`, `+`, `#` or `=`, the request Twitch received was not the
-request you asked for. Those now work.
-
-The one way this can affect you: if you worked around the old behaviour by
-percent-encoding values yourself before passing them in, you will now be
-encoded twice. Remove your own encoding.
-
-```php
-// If you were doing this as a workaround, stop.
-$api->getSearchApi()->searchCategories($token, rawurlencode($term));
-
-// Pass the raw value.
-$api->getSearchApi()->searchCategories($token, $term);
-```
+### Three things that behave differently
 
 #### Four EventSub subscriptions changed version
 
@@ -87,8 +69,14 @@ Deliberately, because fixing them needs a major version:
 
 - `WebhooksSubscriptionApi` is fatal when constructed without an explicit
   client, and wraps an endpoint Twitch retired in 2021. Use `EventSubApi`.
-- `OauthApi::getAuthUrl()` does not encode its parameters, so a scope list or a
-  redirect URI with a query string produces a malformed URL.
+- Query parameter values are not URL encoded. A value containing `&`, `+` or
+  `#` does not reach Twitch intact, and a caller-supplied value can append
+  query parameters of its own to the request. This is fixed in 8.0 rather than
+  here, because encoding would double-encode anyone who worked around it by
+  pre-encoding their values, and that is a breaking change. If you have such a
+  workaround, keep it for now; 8.0 tells you when to remove it.
+- `OauthApi::getAuthUrl()` does not encode its parameters either, so a scope
+  list or a redirect URI with a query string produces a malformed URL.
 - Six methods call endpoints Twitch has withdrawn. They fail at the API, not in
   this library.
 
@@ -98,5 +86,10 @@ See the [changelog](CHANGELOG.md) for the full list.
 
 Not yet released. 8.0 raises the minimum PHP to 8.3, removes the withdrawn
 endpoints and the dead classes above, replaces the internal parameter shape,
-and introduces a typed exception hierarchy. This section will be written
-against the actual release.
+and introduces a typed exception hierarchy.
+
+It also starts URL encoding query parameter values, which is the reason that
+fix is not in 7.3. **If you pre-encode values before passing them in, as a
+workaround for the current behaviour, you must remove that when you upgrade to
+8.0 or your values will be encoded twice.** This section will be written in
+full against the actual release.

@@ -32,11 +32,6 @@ what a release contained rather than every change in it.
 
 ### Fixed
 
-- Query parameter values were interpolated into the URL unencoded. A value
-  containing `&` split into extra parameters, a base64 pagination cursor was
-  corrupted because its `+` decoded as a space, a `#` truncated the value into
-  a URI fragment, and a user-supplied search term could append query
-  parameters of its own to the outgoing request.
 - The `Client-ID` header went missing whenever the caller passed a `headers`
   array of their own, because caller configuration replaced the whole array
   rather than merging into it. Twitch answered those calls with
@@ -87,7 +82,15 @@ change. All are removed or repaired in 8.0.
 - `ScheduleApi::getChanneliCalendar()` and two private EventSub helpers declare
   an optional parameter before a required one, which PHP has reported as
   deprecated since 8.0. Fixing it reorders parameters.
-- `OauthApi::getAuthUrl()` does not encode its query parameters.
+- Query parameter values are interpolated into the URL unencoded. A value
+  containing `&` splits into extra parameters, a base64 pagination cursor is
+  corrupted because its `+` decodes as a space, a `#` truncates the value into
+  a URI fragment, and a user-supplied search term can append query parameters
+  of its own to the outgoing request. Encoding them would double-encode any
+  consumer who worked around this by pre-encoding, which is a breaking change,
+  so it is held for 8.0 rather than shipped in a minor release.
+- `OauthApi::getAuthUrl()` does not encode its query parameters, for the same
+  reason.
 - Six methods call endpoints Twitch has withdrawn.
 
 ## [7.2.0] - 2023-06-13

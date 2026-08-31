@@ -43,8 +43,8 @@ otherwise collide on the same namespace.
 - All 149 documented Helix endpoints, up from 97.
 - 79 EventSub subscription types, up from 45, over the webhook, WebSocket and
   conduit transports.
-- Fixes for several long-standing defects, including unencoded query parameters
-  and the missing `Client-ID` header reported upstream in
+- Fixes for several long-standing defects, including the missing `Client-ID`
+  header reported upstream in
   [#155](https://github.com/nicklaw5/twitch-api-php/issues/155).
 - Tested on PHP 7.4 through 8.5.
 
