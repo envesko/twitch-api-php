@@ -15,7 +15,7 @@ CI. See the release section of [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## [Unreleased]
 
-## [8.0.0] - UNRELEASED
+## [8.0.0] - 2026-08-31
 
 Minimum PHP is now 8.3. Read [UPGRADING.md](UPGRADING.md) before taking this:
 seven things change behaviour and two of them fail silently.
@@ -93,7 +93,7 @@ seven things change behaviour and two of them fail silently.
   analyser says so too. It has aliased `TwitchApi\` since 6.0.0 and still works,
   but 8.0.0 is the last release guaranteed to carry it.
 
-## [7.3.0] - 2026-08-30
+## [7.3.0] - 2026-08-31
 
 ### Added
 
