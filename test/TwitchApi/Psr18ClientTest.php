@@ -13,6 +13,7 @@ use TwitchApi\Exception\TwitchApiException;
 use TwitchApi\HelixGuzzleClient;
 use TwitchApi\RequestGenerator;
 use TwitchApi\Resources\UsersApi;
+use TwitchApi\TwitchApi;
 
 /**
  * A resource class accepts any PSR-18 client, not only HelixGuzzleClient.
@@ -59,6 +60,20 @@ class Psr18ClientTest extends TestCase
     public function testHelixGuzzleClientIsItselfAPsr18Client(): void
     {
         $this->assertInstanceOf(ClientInterface::class, new HelixGuzzleClient('TEST_CLIENT_ID'));
+    }
+
+    public function testTheFacadeAlsoAcceptsAThirdPartyPsr18Client(): void
+    {
+        // The resource classes accepting one is not much use if the documented way in does
+        // not. Everything in the README goes through TwitchApi, so the facade has to take
+        // the same client the resources do.
+        $client = $this->psr18Client(200, '{"data":[{"id":"1"}]}');
+
+        $api = new TwitchApi($client, 'CLIENT_ID', 'CLIENT_SECRET');
+        $response = $api->getUsersApi()->getUserById('TOK', '1');
+
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertStringContainsString('users?id=1', (string) $client->lastRequest->getUri());
     }
 
     private function psr18Client(int $status, string $body): ClientInterface

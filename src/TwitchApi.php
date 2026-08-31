@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace TwitchApi;
 
 use GuzzleHttp\Client;
+use Psr\Http\Client\ClientInterface;
 use TwitchApi\Auth\OauthApi;
 use TwitchApi\Resources\AdsApi;
 use TwitchApi\Resources\AnalyticsApi;
@@ -40,7 +41,13 @@ use TwitchApi\Resources\WhispersApi;
 
 class TwitchApi
 {
-    private HelixGuzzleClient $helixGuzzleClient;
+    /**
+     * The union rather than HelixGuzzleClient alone, so a PSR-18 client can be injected
+     * through the facade and not only into the resource classes directly. Widening accepts
+     * everything the narrower type did, and PHP does not check constructor signatures
+     * against a parent, so no existing caller or subclass is affected.
+     */
+    private HelixGuzzleClient|ClientInterface $helixGuzzleClient;
     private string $clientId;
     private string $clientSecret;
     private ?Client $authGuzzleClient = null;
@@ -79,7 +86,7 @@ class TwitchApi
     private ?GuestStarApi $guestStarApi = null;
     private ?SharedChatApi $sharedChatApi = null;
 
-    public function __construct(HelixGuzzleClient $helixGuzzleClient, string $clientId, string $clientSecret, ?Client $authGuzzleClient = null)
+    public function __construct(HelixGuzzleClient|ClientInterface $helixGuzzleClient, string $clientId, string $clientSecret, ?Client $authGuzzleClient = null)
     {
         $this->helixGuzzleClient = $helixGuzzleClient;
         $this->clientId = $clientId;
