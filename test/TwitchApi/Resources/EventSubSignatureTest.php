@@ -107,4 +107,45 @@ class EventSubSignatureTest extends TestCase
         // explode() is limited to two parts, so a base64-ish hash containing = is not truncated.
         $this->assertFalse($this->verify('sha256=abc=def'));
     }
+
+    public function testAFreshMessageIsAcceptedWithinTheTolerance(): void
+    {
+        $timestamp = gmdate('Y-m-d\TH:i:s\Z');
+        $signature = 'sha256='.hash_hmac('sha256', self::MESSAGE_ID.$timestamp.self::BODY, self::SECRET);
+
+        $this->assertTrue(
+            $this->api()->verifySignature($signature, self::SECRET, self::MESSAGE_ID, $timestamp, self::BODY, 600)
+        );
+    }
+
+    public function testAnOldMessageIsRejectedWhenAToleranceIsGiven(): void
+    {
+        // A replayed message carries a genuine signature, so only the timestamp can catch it.
+        $timestamp = gmdate('Y-m-d\TH:i:s\Z', time() - 3600);
+        $signature = 'sha256='.hash_hmac('sha256', self::MESSAGE_ID.$timestamp.self::BODY, self::SECRET);
+
+        $this->assertFalse(
+            $this->api()->verifySignature($signature, self::SECRET, self::MESSAGE_ID, $timestamp, self::BODY, 600)
+        );
+    }
+
+    public function testTheSameOldMessagePassesWhenNoToleranceIsGiven(): void
+    {
+        // The check is opt in, so existing callers see no change in behaviour.
+        $timestamp = gmdate('Y-m-d\TH:i:s\Z', time() - 3600);
+        $signature = 'sha256='.hash_hmac('sha256', self::MESSAGE_ID.$timestamp.self::BODY, self::SECRET);
+
+        $this->assertTrue(
+            $this->api()->verifySignature($signature, self::SECRET, self::MESSAGE_ID, $timestamp, self::BODY)
+        );
+    }
+
+    public function testAnUnparsableTimestampIsRejectedWhenAToleranceIsGiven(): void
+    {
+        $signature = 'sha256='.hash_hmac('sha256', self::MESSAGE_ID.'not-a-date'.self::BODY, self::SECRET);
+
+        $this->assertFalse(
+            $this->api()->verifySignature($signature, self::SECRET, self::MESSAGE_ID, 'not-a-date', self::BODY, 600)
+        );
+    }
 }

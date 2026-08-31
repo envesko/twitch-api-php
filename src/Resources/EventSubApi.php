@@ -542,8 +542,16 @@ class EventSubApi extends AbstractResource
     /**
      * @link https://dev.twitch.tv/docs/eventsub#verify-a-signature
      */
-    public function verifySignature(string $signature, string $secret, string $messageId, string $timestamp, string $body): bool
+    public function verifySignature(string $signature, string $secret, string $messageId, string $timestamp, string $body, ?int $toleranceSeconds = null): bool
     {
+        // Twitch recommends rejecting a message whose timestamp is outside a ten minute
+        // window, so a captured request cannot be replayed later. Opt in by passing a
+        // tolerance; the signature check alone cannot detect a replay, because a replayed
+        // message carries a genuine signature.
+        if ($toleranceSeconds !== null && !$this->isWithinTolerance($timestamp, $toleranceSeconds)) {
+            return false;
+        }
+
         // Twitch sends "sha256=<hex>". A header that is absent, truncated or malformed used to
         // reach explode() and leave the second element undefined, raising a warning. Under an
         // error handler that promotes warnings to exceptions, which is the common production
@@ -562,6 +570,20 @@ class EventSubApi extends AbstractResource
 
         // Constant-time, so comparing a forged signature does not leak how much of it matched.
         return hash_equals($generatedHash, $expectedHash);
+    }
+
+    /**
+     * Whether an EventSub message timestamp is recent enough to accept.
+     */
+    private function isWithinTolerance(string $timestamp, int $toleranceSeconds): bool
+    {
+        $sent = strtotime($timestamp);
+
+        if ($sent === false) {
+            return false;
+        }
+
+        return abs(time() - $sent) <= $toleranceSeconds;
     }
 
     private function subscribeToChannelModerator(string $bearer, string $secret, string $callback, string $twitchId, string $eventType): ResponseInterface
