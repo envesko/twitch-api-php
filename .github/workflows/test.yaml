@@ -10,15 +10,14 @@ on:
     - master
 
 jobs:
-  # phpspec caps at PHP 8.3, so the full suite can only run up to there.
   test:
-    name: "Tests: PHP ${{ matrix.php }}"
+    name: "PHP ${{ matrix.php }}"
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
-        php: ['7.4', '8.0', '8.1', '8.2', '8.3']
+        php: ['7.4', '8.0', '8.1', '8.2', '8.3', '8.4', '8.5']
 
     steps:
       - uses: actions/checkout@v4
@@ -37,55 +36,12 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
-          key: php${{ matrix.php }}-composer-${{ hashFiles('**/composer.lock') }}
+          key: php${{ matrix.php }}-composer-${{ hashFiles('**/composer.json') }}
           restore-keys: |
             php${{ matrix.php }}-composer-
 
       - name: Install dependencies using Composer
-        run: composer install --prefer-source --no-interaction
+        run: composer install --prefer-dist --no-interaction
 
       - name: Run tests
         run: make test
-
-  # The deprecation this library shipped for three years only exists on PHP 8.4 and up, and
-  # phpspec cannot install there. This job covers those versions with what does run: PHPUnit
-  # plus a check that loading the library emits nothing of its own.
-  diagnostics:
-    name: "Diagnostics: PHP ${{ matrix.php }}"
-    runs-on: ubuntu-latest
-
-    strategy:
-      fail-fast: false
-      matrix:
-        php: ['8.4', '8.5']
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: "${{ matrix.php }}"
-
-      - name: Get Composer Cache Directory
-        id: composer-cache
-        run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
-
-      - name: Cache Composer dependencies
-        uses: actions/cache@v4
-        with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          key: php${{ matrix.php }}-composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            php${{ matrix.php }}-composer-
-
-      # phpspec declares support only up to 8.3. It is not run here, but Composer still
-      # refuses to resolve without this, so the platform requirement is waived.
-      - name: Install dependencies using Composer
-        run: composer install --prefer-source --no-interaction --ignore-platform-req=php+
-
-      - name: Check the library emits no diagnostics of its own
-        run: make check-deprecations
-
-      - name: Run PHPUnit
-        run: make test-phpunit
