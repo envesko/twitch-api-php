@@ -13,7 +13,7 @@ class SearchApi extends AbstractResource
      * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference#search-categories
      */
-    public function searchCategories(string $bearer, string $query, string $first = null, string $after = null): ResponseInterface
+    public function searchCategories(string $bearer, string $query, ?string $first = null, ?string $after = null): ResponseInterface
     {
         $queryParamsMap = [];
 
@@ -34,7 +34,7 @@ class SearchApi extends AbstractResource
      * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference#search-channels
      */
-    public function searchChannels(string $bearer, string $query, $liveOnly = null, string $first = null, string $after = null): ResponseInterface
+    public function searchChannels(string $bearer, string $query, $liveOnly = null, ?string $first = null, ?string $after = null): ResponseInterface
     {
         $queryParamsMap = [];
 

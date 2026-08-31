@@ -13,7 +13,7 @@ class ScheduleApi extends AbstractResource
      * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference/#get-channel-stream-schedule
      */
-    public function getChannelStreamSchedule(string $bearer, string $broadcasterId, array $ids = [], string $startTime = null, string $utcOffset = null, int $first = null, string $after = null): ResponseInterface
+    public function getChannelStreamSchedule(string $bearer, string $broadcasterId, array $ids = [], ?string $startTime = null, ?string $utcOffset = null, ?int $first = null, ?string $after = null): ResponseInterface
     {
         $queryParamsMap = [];
 
@@ -46,7 +46,7 @@ class ScheduleApi extends AbstractResource
      * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference/#get-channel-icalendar
      */
-    public function getChanneliCalendar(string $bearer = null, string $broadcasterId): ResponseInterface
+    public function getChanneliCalendar(?string $bearer = null, string $broadcasterId): ResponseInterface
     {
         // This endpoint at the time of addition does not require any authorization, so the bearer is null.
         // However, to prevent a breaking update in the future, it will remain the first function parameter.
@@ -63,7 +63,7 @@ class ScheduleApi extends AbstractResource
      * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference/#update-channel-stream-schedule
      */
-    public function updateChannelStreamSchedule(string $bearer, string $broadcasterId, bool $isVacationEnabled = null, $vacationStartTime = null, $vacationEndTime = null, $timezone = null): ResponseInterface
+    public function updateChannelStreamSchedule(string $bearer, string $broadcasterId, ?bool $isVacationEnabled = null, $vacationStartTime = null, $vacationEndTime = null, $timezone = null): ResponseInterface
     {
         $queryParamsMap = [];
 

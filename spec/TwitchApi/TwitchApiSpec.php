@@ -13,10 +13,14 @@ use TwitchApi\Resources\ChannelsApi;
 use TwitchApi\Resources\CharityApi;
 use TwitchApi\Resources\ChatApi;
 use TwitchApi\Resources\ClipsApi;
+use TwitchApi\Resources\ConduitsApi;
+use TwitchApi\Resources\ContentClassificationLabelsApi;
 use TwitchApi\Resources\EntitlementsApi;
 use TwitchApi\Resources\EventSubApi;
+use TwitchApi\Resources\ExtensionsApi;
 use TwitchApi\Resources\GamesApi;
 use TwitchApi\Resources\GoalsApi;
+use TwitchApi\Resources\GuestStarApi;
 use TwitchApi\Resources\HypeTrainApi;
 use TwitchApi\Resources\ModerationApi;
 use TwitchApi\Resources\PollsApi;
@@ -24,6 +28,7 @@ use TwitchApi\Resources\PredictionsApi;
 use TwitchApi\Resources\RaidsApi;
 use TwitchApi\Resources\ScheduleApi;
 use TwitchApi\Resources\SearchApi;
+use TwitchApi\Resources\SharedChatApi;
 use TwitchApi\Resources\StreamsApi;
 use TwitchApi\Resources\SubscriptionsApi;
 use TwitchApi\Resources\TagsApi;
@@ -184,5 +189,30 @@ class TwitchApiSpec extends ObjectBehavior
     function it_should_provide_webhooks_subscription_api()
     {
         $this->getWebhooksSubscriptionApi()->shouldBeAnInstanceOf(WebhooksSubscriptionApi::class);
+    }
+
+    function it_should_provide_conduits_api()
+    {
+        $this->getConduitsApi()->shouldBeAnInstanceOf(ConduitsApi::class);
+    }
+
+    function it_should_provide_content_classification_labels_api()
+    {
+        $this->getContentClassificationLabelsApi()->shouldBeAnInstanceOf(ContentClassificationLabelsApi::class);
+    }
+
+    function it_should_provide_extensions_api()
+    {
+        $this->getExtensionsApi()->shouldBeAnInstanceOf(ExtensionsApi::class);
+    }
+
+    function it_should_provide_guest_star_api()
+    {
+        $this->getGuestStarApi()->shouldBeAnInstanceOf(GuestStarApi::class);
+    }
+
+    function it_should_provide_shared_chat_api()
+    {
+        $this->getSharedChatApi()->shouldBeAnInstanceOf(SharedChatApi::class);
     }
 }

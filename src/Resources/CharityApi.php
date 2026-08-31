@@ -25,7 +25,7 @@ class CharityApi extends AbstractResource
      * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference#get-charity-campaign-donations
      */
-    public function getCharityCampaignDonations(string $bearer, string $broadcasterId, int $first = null, string $after = null): ResponseInterface
+    public function getCharityCampaignDonations(string $bearer, string $broadcasterId, ?int $first = null, ?string $after = null): ResponseInterface
     {
         $queryParamsMap = [];
         $queryParamsMap[] = ['key' => 'broadcaster_id', 'value' => $broadcasterId];

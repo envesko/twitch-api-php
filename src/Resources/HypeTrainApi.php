@@ -13,7 +13,7 @@ class HypeTrainApi extends AbstractResource
      * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference#get-hype-train-events
      */
-    public function getHypeTrainEvents(string $bearer, string $broadcasterId, int $first = null, string $cursor = null): ResponseInterface
+    public function getHypeTrainEvents(string $bearer, string $broadcasterId, ?int $first = null, ?string $cursor = null): ResponseInterface
     {
         $queryParamsMap = [];
 
@@ -28,5 +28,20 @@ class HypeTrainApi extends AbstractResource
         }
 
         return $this->getApi('hypetrain/events', $bearer, $queryParamsMap);
+    }
+
+    /**
+     * @throws GuzzleException
+     * @link https://dev.twitch.tv/docs/api/reference/#get-hype-train-status
+     *
+     * Replaces getHypeTrainEvents, whose endpoint Twitch withdrew.
+     */
+    public function getHypeTrainStatus(string $bearer, string $broadcasterId): ResponseInterface
+    {
+        $queryParamsMap = [];
+
+        $queryParamsMap[] = ['key' => 'broadcaster_id', 'value' => $broadcasterId];
+
+        return $this->getApi('hypetrain/status', $bearer, $queryParamsMap);
     }
 }

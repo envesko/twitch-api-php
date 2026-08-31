@@ -13,7 +13,7 @@ class BitsApi extends AbstractResource
      * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference#get-cheermotes
      */
-    public function getCheermotes(string $bearer, string $broadcasterId = null): ResponseInterface
+    public function getCheermotes(string $bearer, ?string $broadcasterId = null): ResponseInterface
     {
         $queryParamsMap = [];
 
@@ -28,7 +28,7 @@ class BitsApi extends AbstractResource
      * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference#get-bits-leaderboard
      */
-    public function getBitsLeaderboard(string $bearer, int $count = null, string $period = null, string $startedAt = null, string $userId = null): ResponseInterface
+    public function getBitsLeaderboard(string $bearer, ?int $count = null, ?string $period = null, ?string $startedAt = null, ?string $userId = null): ResponseInterface
     {
         $queryParamsMap = [];
 
@@ -55,7 +55,7 @@ class BitsApi extends AbstractResource
      * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference#get-extension-transactions
      */
-    public function getExtensionTransactions(string $bearer, string $extensionId, array $transactionIds = [], int $first = null, string $after = null): ResponseInterface
+    public function getExtensionTransactions(string $bearer, string $extensionId, array $transactionIds = [], ?int $first = null, ?string $after = null): ResponseInterface
     {
         $queryParamsMap = [];
 
@@ -74,5 +74,52 @@ class BitsApi extends AbstractResource
         }
 
         return $this->getApi('extensions/transactions', $bearer, $queryParamsMap);
+    }
+
+    /**
+     * @throws GuzzleException
+     * @link https://dev.twitch.tv/docs/api/reference/#get-custom-power-up
+     */
+    public function getCustomPowerUp(string $bearer, string $broadcasterId): ResponseInterface
+    {
+        $queryParamsMap = [];
+
+        $queryParamsMap[] = ['key' => 'broadcaster_id', 'value' => $broadcasterId];
+
+        return $this->getApi('bits/custom_power_ups', $bearer, $queryParamsMap);
+    }
+
+    /**
+     * @throws GuzzleException
+     * @link https://dev.twitch.tv/docs/api/reference/#get-extension-bits-products
+     */
+    public function getExtensionBitsProducts(string $bearer, ?bool $shouldIncludeAll = null): ResponseInterface
+    {
+        $queryParamsMap = [];
+
+        if (null !== $shouldIncludeAll) {
+            $queryParamsMap[] = ['key' => 'should_include_all', 'value' => $shouldIncludeAll];
+        }
+
+        return $this->getApi('bits/extensions', $bearer, $queryParamsMap);
+    }
+
+    /**
+     * @throws GuzzleException
+     * @link https://dev.twitch.tv/docs/api/reference/#update-extension-bits-product
+     */
+    public function updateExtensionBitsProduct(string $bearer, string $sku, array $cost, string $displayName, array $optionalBodyParams = []): ResponseInterface
+    {
+        $bodyParamsMap = [];
+
+        $bodyParamsMap[] = ['key' => 'sku', 'value' => $sku];
+        $bodyParamsMap[] = ['key' => 'cost', 'value' => $cost];
+        $bodyParamsMap[] = ['key' => 'display_name', 'value' => $displayName];
+
+        foreach ($optionalBodyParams as $key => $value) {
+            $bodyParamsMap[] = ['key' => $key, 'value' => $value];
+        }
+
+        return $this->putApi('bits/extensions', $bearer, [], $bodyParamsMap);
     }
 }

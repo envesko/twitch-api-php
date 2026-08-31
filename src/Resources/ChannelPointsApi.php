@@ -12,7 +12,7 @@ class ChannelPointsApi extends AbstractResource
     /**
      * @throws GuzzleException
      */
-    public function getCustomRewardById(string $bearer, string $broadcasterId, string $id, bool $onlyManageableRewards = null): ResponseInterface
+    public function getCustomRewardById(string $bearer, string $broadcasterId, string $id, ?bool $onlyManageableRewards = null): ResponseInterface
     {
         return $this->getCustomReward($bearer, $broadcasterId, [$id], $onlyManageableRewards);
     }
@@ -21,7 +21,7 @@ class ChannelPointsApi extends AbstractResource
      * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference#get-custom-reward
      */
-    public function getCustomReward(string $bearer, string $broadcasterId, array $ids = [], bool $onlyManageableRewards = null): ResponseInterface
+    public function getCustomReward(string $bearer, string $broadcasterId, array $ids = [], ?bool $onlyManageableRewards = null): ResponseInterface
     {
         $queryParamsMap = [];
 
@@ -42,7 +42,7 @@ class ChannelPointsApi extends AbstractResource
      * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference#get-custom-reward-redemption
      */
-    public function getCustomRewardRedemption(string $bearer, string $broadcasterId, string $rewardId = null, array $ids = [], string $status = null, string $sort = null, string $after = null, string $first = null): ResponseInterface
+    public function getCustomRewardRedemption(string $bearer, string $broadcasterId, ?string $rewardId = null, array $ids = [], ?string $status = null, ?string $sort = null, ?string $after = null, ?string $first = null): ResponseInterface
     {
         $queryParamsMap = [];
 

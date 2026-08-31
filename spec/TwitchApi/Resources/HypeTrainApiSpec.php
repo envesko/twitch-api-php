@@ -27,4 +27,10 @@ class HypeTrainApiSpec extends ObjectBehavior
         $requestGenerator->generate('GET', 'hypetrain/events', 'TEST_TOKEN', [['key' => 'broadcaster_id', 'value' => '123'], ['key' => 'first', 'value' => 100], ['key' => 'cursor', 'value' => 'abc']], [])->willReturn($request);
         $this->getHypeTrainEvents('TEST_TOKEN', '123', 100, 'abc')->shouldBe($response);
     }
+
+    function it_should_get_hype_train_status(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $requestGenerator->generate('GET', 'hypetrain/status', 'TEST_TOKEN', [['key' => 'broadcaster_id', 'value' => '123']], [])->willReturn($request);
+        $this->getHypeTrainStatus('TEST_TOKEN', '123')->shouldBe($response);
+    }
 }

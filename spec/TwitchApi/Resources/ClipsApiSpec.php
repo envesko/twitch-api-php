@@ -75,4 +75,28 @@ class ClipsApiSpec extends ObjectBehavior
         $requestGenerator->generate('POST', 'clips', 'TEST_TOKEN', [['key' => 'broadcaster_id', 'value' => '123'], ['key' => 'has_delay', 'value' => 'true']], [])->willReturn($request);
         $this->createClip('TEST_TOKEN', '123', true)->shouldBe($response);
     }
+
+    function it_should_get_clips_download(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $requestGenerator->generate('GET', 'clips/downloads', 'TEST_TOKEN', [['key' => 'broadcaster_id', 'value' => '123']], [])->willReturn($request);
+        $this->getClipsDownload('TEST_TOKEN', '123')->shouldBe($response);
+    }
+
+    function it_should_create_a_clip_from_a_vod(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $requestGenerator->generate('POST', 'videos/clips', 'TEST_TOKEN', [], [['key' => 'video_id', 'value' => 'vid'], ['key' => 'offset_seconds', 'value' => 30]])->willReturn($request);
+        $this->createClipFromVod('TEST_TOKEN', 'vid', 30)->shouldBe($response);
+    }
+
+    function it_should_get_clips_download_within_a_window(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $requestGenerator->generate('GET', 'clips/downloads', 'TEST_TOKEN', [['key' => 'broadcaster_id', 'value' => '123'], ['key' => 'started_at', 'value' => '2026-01-01T00:00:00Z'], ['key' => 'ended_at', 'value' => '2026-02-01T00:00:00Z'], ['key' => 'first', 'value' => 20], ['key' => 'after', 'value' => 'cursor']], [])->willReturn($request);
+        $this->getClipsDownload('TEST_TOKEN', '123', '2026-01-01T00:00:00Z', '2026-02-01T00:00:00Z', 20, 'cursor')->shouldBe($response);
+    }
+
+    function it_should_create_a_clip_from_a_vod_with_a_duration(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $requestGenerator->generate('POST', 'videos/clips', 'TEST_TOKEN', [], [['key' => 'video_id', 'value' => 'vid'], ['key' => 'offset_seconds', 'value' => 30], ['key' => 'duration_seconds', 'value' => 60]])->willReturn($request);
+        $this->createClipFromVod('TEST_TOKEN', 'vid', 30, 60)->shouldBe($response);
+    }
 }

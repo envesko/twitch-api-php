@@ -57,7 +57,7 @@ class UsersApi extends AbstractResource
      * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference/#get-users-follows
      */
-    public function getUsersFollows(string $bearer, string $followerId = null, string $followedUserId = null, int $first = null, string $after = null): ResponseInterface
+    public function getUsersFollows(string $bearer, ?string $followerId = null, ?string $followedUserId = null, ?int $first = null, ?string $after = null): ResponseInterface
     {
         $queryParamsMap = [];
         if ($followerId) {
@@ -91,7 +91,7 @@ class UsersApi extends AbstractResource
      * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference/#get-user-active-extensions
      */
-    public function getActiveUserExtensions(string $bearer, string $userId = null): ResponseInterface
+    public function getActiveUserExtensions(string $bearer, ?string $userId = null): ResponseInterface
     {
         $queryParamsMap = [];
 
@@ -106,7 +106,7 @@ class UsersApi extends AbstractResource
      * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference#update-user
      */
-    public function updateUser(string $bearer, string $description = null): ResponseInterface
+    public function updateUser(string $bearer, ?string $description = null): ResponseInterface
     {
         $queryParamsMap = [];
 
@@ -121,7 +121,7 @@ class UsersApi extends AbstractResource
      * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference#get-user-block-list
      */
-    public function getUserBlockList(string $bearer, string $broadcasterId, int $first = null, string $after = null): ResponseInterface
+    public function getUserBlockList(string $bearer, string $broadcasterId, ?int $first = null, ?string $after = null): ResponseInterface
     {
         $queryParamsMap = [];
 
@@ -141,7 +141,7 @@ class UsersApi extends AbstractResource
      * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference#block-user
      */
-    public function blockUser(string $bearer, string $targetUserId, string $sourceContext = null, string $reason = null): ResponseInterface
+    public function blockUser(string $bearer, string $targetUserId, ?string $sourceContext = null, ?string $reason = null): ResponseInterface
     {
         $queryParamsMap = [];
 
@@ -169,5 +169,31 @@ class UsersApi extends AbstractResource
         $queryParamsMap[] = ['key' => 'target_user_id', 'value' => $targetUserId];
 
         return $this->deleteApi('users/blocks', $bearer, $queryParamsMap);
+    }
+
+    /**
+     * @throws GuzzleException
+     * @link https://dev.twitch.tv/docs/api/reference/#update-user-extensions
+     */
+    public function updateUserExtensions(string $bearer, array $data): ResponseInterface
+    {
+        $bodyParamsMap = [];
+
+        $bodyParamsMap[] = ['key' => 'data', 'value' => $data];
+
+        return $this->putApi('users/extensions', $bearer, [], $bodyParamsMap);
+    }
+
+    /**
+     * @throws GuzzleException
+     * @link https://dev.twitch.tv/docs/api/reference/#get-authorization-by-user
+     */
+    public function getAuthorizationByUser(string $bearer, string $userId): ResponseInterface
+    {
+        $queryParamsMap = [];
+
+        $queryParamsMap[] = ['key' => 'user_id', 'value' => $userId];
+
+        return $this->getApi('authorization/users', $bearer, $queryParamsMap);
     }
 }

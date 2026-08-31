@@ -123,4 +123,58 @@ class ChatApiSpec extends ObjectBehavior
         $requestGenerator->generate('POST', 'chat/shoutouts', 'TEST_TOKEN', [['key' => 'from_broadcaster_id', 'value' => '123'], ['key' => 'to_broadcaster_id', 'value' => '456'], ['key' => 'moderator_id', 'value' => '789']], [])->willReturn($request);
         $this->sendShoutout('TEST_TOKEN', '123', '456', '789')->shouldBe($response);
     }
+
+    function it_should_send_a_chat_message(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $requestGenerator->generate('POST', 'chat/messages', 'TEST_TOKEN', [], [['key' => 'broadcaster_id', 'value' => '123'], ['key' => 'sender_id', 'value' => '456'], ['key' => 'message', 'value' => 'hello']])->willReturn($request);
+        $this->sendChatMessage('TEST_TOKEN', '123', '456', 'hello')->shouldBe($response);
+    }
+
+    function it_should_send_a_chat_message_as_a_reply(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $requestGenerator->generate('POST', 'chat/messages', 'TEST_TOKEN', [], [['key' => 'broadcaster_id', 'value' => '123'], ['key' => 'sender_id', 'value' => '456'], ['key' => 'message', 'value' => 'hello'], ['key' => 'reply_parent_message_id', 'value' => 'msg']])->willReturn($request);
+        $this->sendChatMessage('TEST_TOKEN', '123', '456', 'hello', 'msg')->shouldBe($response);
+    }
+
+    function it_should_get_user_emotes(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $requestGenerator->generate('GET', 'chat/emotes/user', 'TEST_TOKEN', [['key' => 'user_id', 'value' => '456']], [])->willReturn($request);
+        $this->getUserEmotes('TEST_TOKEN', '456')->shouldBe($response);
+    }
+
+    function it_should_get_the_pinned_chat_message(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $requestGenerator->generate('GET', 'chat/pins', 'TEST_TOKEN', [['key' => 'broadcaster_id', 'value' => '123']], [])->willReturn($request);
+        $this->getPinnedChatMessage('TEST_TOKEN', '123')->shouldBe($response);
+    }
+
+    function it_should_pin_a_chat_message(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $requestGenerator->generate('PUT', 'chat/pins', 'TEST_TOKEN', [['key' => 'broadcaster_id', 'value' => '123']], [['key' => 'message_id', 'value' => 'msg'], ['key' => 'duration_seconds', 'value' => 60]])->willReturn($request);
+        $this->pinChatMessage('TEST_TOKEN', '123', 'msg', 60)->shouldBe($response);
+    }
+
+    function it_should_update_a_pinned_chat_message(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $requestGenerator->generate('PATCH', 'chat/pins', 'TEST_TOKEN', [['key' => 'broadcaster_id', 'value' => '123']], [['key' => 'pinned_message_id', 'value' => 'pin'], ['key' => 'duration_seconds', 'value' => 120]])->willReturn($request);
+        $this->updatePinnedChatMessage('TEST_TOKEN', '123', 'pin', 120)->shouldBe($response);
+    }
+
+    function it_should_unpin_a_chat_message(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $requestGenerator->generate('DELETE', 'chat/pins', 'TEST_TOKEN', [['key' => 'broadcaster_id', 'value' => '123'], ['key' => 'pinned_message_id', 'value' => 'pin']], [])->willReturn($request);
+        $this->unpinChatMessage('TEST_TOKEN', '123', 'pin')->shouldBe($response);
+    }
+
+    function it_should_send_a_chat_message_to_the_source_channel_only(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $requestGenerator->generate('POST', 'chat/messages', 'TEST_TOKEN', [], [['key' => 'broadcaster_id', 'value' => '123'], ['key' => 'sender_id', 'value' => '456'], ['key' => 'message', 'value' => 'hello'], ['key' => 'for_source_only', 'value' => 'true']])->willReturn($request);
+        $this->sendChatMessage('TEST_TOKEN', '123', '456', 'hello', null, 'true')->shouldBe($response);
+    }
+
+    function it_should_get_user_emotes_for_a_broadcaster_with_paging(RequestGenerator $requestGenerator, Request $request, Response $response)
+    {
+        $requestGenerator->generate('GET', 'chat/emotes/user', 'TEST_TOKEN', [['key' => 'user_id', 'value' => '456'], ['key' => 'broadcaster_id', 'value' => '123'], ['key' => 'after', 'value' => 'cursor']], [])->willReturn($request);
+        $this->getUserEmotes('TEST_TOKEN', '456', '123', 'cursor')->shouldBe($response);
+    }
 }

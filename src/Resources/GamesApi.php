@@ -30,7 +30,7 @@ class GamesApi extends AbstractResource
      * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference/#get-top-games
      */
-    public function getTopGames(string $bearer, int $first = null, string $before = null, string $after = null): ResponseInterface
+    public function getTopGames(string $bearer, ?int $first = null, ?string $before = null, ?string $after = null): ResponseInterface
     {
         $queryParamsMap = [];
 

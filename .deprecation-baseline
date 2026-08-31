@@ -1,0 +1,5 @@
+# Diagnostics emitted by src/ that are accepted for now.
+# Each needs a breaking change to fix, so they are held for the next major version.
+# Regenerate with: php bin/check-deprecations.php --update-baseline
+1	Deprecated: Optional parameter $bearer declared before required parameter $broadcasterId is implicitly treated as a required parameter (Resources/ScheduleApi.php)
+2	Deprecated: Optional parameter $rewardId declared before required parameter $eventType is implicitly treated as a required parameter (Resources/EventSubApi.php)

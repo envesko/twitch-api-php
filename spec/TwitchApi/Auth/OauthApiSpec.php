@@ -115,4 +115,21 @@ class OauthApiSpec extends ObjectBehavior
 
         $this->getAppAccessToken()->shouldBe($response);
     }
+
+    function it_should_get_refresh_token_with_a_scope(Client $guzzleClient, Response $response)
+    {
+        $request = new Request(
+            'POST',
+            'token'
+        );
+        $guzzleClient->send($request, ['json' => [
+            'client_id' => 'client-id',
+            'client_secret' => 'client-secret',
+            'grant_type' => 'refresh_token',
+            'refresh_token' => 'user-refresh-token',
+            'scope' => 'user:read:email',
+        ]])->willReturn($response);
+
+        $this->refreshToken('user-refresh-token', 'user:read:email')->shouldBe($response);
+    }
 }

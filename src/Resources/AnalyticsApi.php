@@ -13,7 +13,7 @@ class AnalyticsApi extends AbstractResource
      * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference#get-extension-analytics
      */
-    public function getExtensionAnalytics(string $bearer, string $extensionId = null, string $type = null, int $first = null, string $after = null, string $startedAt = null, string $endedAt = null): ResponseInterface
+    public function getExtensionAnalytics(string $bearer, ?string $extensionId = null, ?string $type = null, ?int $first = null, ?string $after = null, ?string $startedAt = null, ?string $endedAt = null): ResponseInterface
     {
         $queryParamsMap = [];
 
@@ -48,7 +48,7 @@ class AnalyticsApi extends AbstractResource
      * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference#get-game-analytics
      */
-    public function getGameAnalytics(string $bearer, string $gameId = null, string $type = null, int $first = null, string $after = null, string $startedAt = null, string $endedAt = null): ResponseInterface
+    public function getGameAnalytics(string $bearer, ?string $gameId = null, ?string $type = null, ?int $first = null, ?string $after = null, ?string $startedAt = null, ?string $endedAt = null): ResponseInterface
     {
         $queryParamsMap = [];
 

@@ -13,7 +13,7 @@ class PredictionsApi extends AbstractResource
      * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference#get-predictions
      */
-    public function getPredictions(string $bearer, string $broadcasterId, array $ids = [], string $after = null, int $first = null): ResponseInterface
+    public function getPredictions(string $bearer, string $broadcasterId, array $ids = [], ?string $after = null, ?int $first = null): ResponseInterface
     {
         $queryParamsMap = [];
 
@@ -54,7 +54,7 @@ class PredictionsApi extends AbstractResource
      * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference#end-prediction
      */
-    public function endPrediction(string $bearer, string $broadcasterId, string $pollId, string $status, string $winningOutcomeId = null): ResponseInterface
+    public function endPrediction(string $bearer, string $broadcasterId, string $pollId, string $status, ?string $winningOutcomeId = null): ResponseInterface
     {
         $bodyParamsMap = [];
 

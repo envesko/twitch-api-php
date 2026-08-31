@@ -16,7 +16,7 @@ class OauthApi
     private $clientSecret;
     private $guzzleClient;
 
-    public function __construct(string $clientId, string $clientSecret, Client $guzzleClient = null)
+    public function __construct(string $clientId, string $clientSecret, ?Client $guzzleClient = null)
     {
         $this->clientId = $clientId;
         $this->clientSecret = $clientSecret;
@@ -26,7 +26,7 @@ class OauthApi
     /**
      * @return string A full authentication URL, including the Guzzle client's base URI.
      */
-    public function getAuthUrl(string $redirectUri, string $responseType = 'code', string $scope = '', bool $forceVerify = false, string $state = null): string
+    public function getAuthUrl(string $redirectUri, string $responseType = 'code', string $scope = '', bool $forceVerify = false, ?string $state = null): string
     {
         return sprintf(
             '%s%s',
@@ -131,7 +131,7 @@ class OauthApi
     /**
      * @return string A partial authentication URL, excluding the Guzzle client's base URI.
      */
-    private function getPartialAuthUrl(string $redirectUri, string $responseType = 'code', string $scope = '', bool $forceVerify = false, string $state = null): string
+    private function getPartialAuthUrl(string $redirectUri, string $responseType = 'code', string $scope = '', bool $forceVerify = false, ?string $state = null): string
     {
         $optionalParameters = '';
         $optionalParameters .= $forceVerify ? '&force_verify=true' : '';

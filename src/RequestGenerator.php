@@ -7,10 +7,10 @@ use Psr\Http\Message\RequestInterface;
 
 class RequestGenerator
 {
-    public function generate(string $httpMethod, string $uriEndpoint, string $bearer = null, array $queryParamsMap = [], array $bodyParams = []): RequestInterface
+    public function generate(string $httpMethod, string $uriEndpoint, ?string $bearer = null, array $queryParamsMap = [], array $bodyParams = []): RequestInterface
     {
         $headers = [
-          'Accept' => 'application/json',
+            'Accept' => 'application/json',
         ];
 
         if ($bearer) {
@@ -59,8 +59,18 @@ class RequestGenerator
                 if (is_bool($paramMap['value'])) {
                     $paramMap['value'] = (int) $paramMap['value'];
                 }
-                $format = is_int($paramMap['value']) ? '%d' : '%s';
-                $queryStringParams .= sprintf('&%s='.$format, $paramMap['key'], $paramMap['value']);
+
+                // Values reach here straight from the caller, so they can hold anything a
+                // Twitch field allows: a game title containing & or #, a base64 pagination
+                // cursor containing + and =, or a search term typed by the caller's own user.
+                // Interpolating those raw truncates the value or appends parameters nobody
+                // asked for. rawurlencode is used rather than urlencode so a space stays %20,
+                // which is what the URI already produced before this was escaped at all.
+                $queryStringParams .= sprintf(
+                    '&%s=%s',
+                    rawurlencode((string) $paramMap['key']),
+                    rawurlencode((string) $paramMap['value'])
+                );
             }
         }
 

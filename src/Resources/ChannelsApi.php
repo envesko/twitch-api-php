@@ -57,7 +57,7 @@ class ChannelsApi extends AbstractResource
      * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference/#get-followed-channels
      */
-    public function getFollowedChannels(string $bearer, string $userId, string $broadcasterId = null, int $first = null, string $after = null): ResponseInterface
+    public function getFollowedChannels(string $bearer, string $userId, ?string $broadcasterId = null, ?int $first = null, ?string $after = null): ResponseInterface
     {
         $queryParamsMap = [];
 
@@ -82,7 +82,7 @@ class ChannelsApi extends AbstractResource
      * @throws GuzzleException
      * @link https://dev.twitch.tv/docs/api/reference/#get-channel-followers
      */
-    public function getChannelFollowers(string $bearer, string $broadcasterId, string $userId = null, int $first = null, string $after = null): ResponseInterface
+    public function getChannelFollowers(string $bearer, string $broadcasterId, ?string $userId = null, ?int $first = null, ?string $after = null): ResponseInterface
     {
         $queryParamsMap = [];
 
