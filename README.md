@@ -320,6 +320,10 @@ Then, whichever it was, check these. They are the things that bite:
 - Anywhere `isValidAccessToken()` is called. In 8.0.0 it returns false for a
   rejected token instead of throwing. If the code treats reaching the next line
   as "valid", it is now wrong.
+- Any call to `searchChannels()` passing a string as its third argument. That
+  parameter is now `?bool`, and a string coerces to true, so a value of
+  `'false'` inverts the live filter without raising anything. This fails
+  silently.
 - Calls to methods removed in 8.0.0: `getUsersFollows`, `getHypeTrainEvents`,
   `replaceStreamTags`, anything on `WebhooksApi` or `WebhooksSubscriptionApi`,
   and the three code-redemption methods on `EntitlementsApi`. UPGRADING.md

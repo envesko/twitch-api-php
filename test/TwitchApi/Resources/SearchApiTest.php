@@ -54,4 +54,26 @@ class SearchApiTest extends ResourceTestCase
             ['after', 'abc'],
         ]);
     }
+
+    public function testShouldOmitLiveOnlyWhenFalse(): void
+    {
+        // $liveOnly gained a ?bool type in 8.0.0. Passing a string there coerces to true
+        // in a caller that is not under strict_types, which inverts the filter without
+        // raising anything, so UPGRADING.md documents it. These two pin the behaviour a
+        // caller passing real booleans gets, which is unchanged from 7.x.
+        $this->api()->searchChannels(self::TOKEN, 'test', false);
+
+        $this->assertSent('GET', 'search/channels', [
+            ['query', 'test'],
+        ]);
+    }
+
+    public function testShouldOmitLiveOnlyWhenNull(): void
+    {
+        $this->api()->searchChannels(self::TOKEN, 'test', null);
+
+        $this->assertSent('GET', 'search/channels', [
+            ['query', 'test'],
+        ]);
+    }
 }

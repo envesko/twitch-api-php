@@ -3,7 +3,7 @@
 8.0.0 is the current release and the one to be on. It fixes the things 7.x could
 not fix without breaking, the most important being that query parameter values
 now reach Twitch intact. Read the section below before taking it: seven things
-change behaviour and two of them fail silently.
+change behaviour and three of them can fail silently.
 
 > [!NOTE]
 > **If you cannot take 8.0.0 yet, drop to 7.3.0:**
@@ -24,9 +24,10 @@ first. It is a drop-in replacement and takes two commands.
 
 ## 7.x to 8.0.0
 
-Minimum PHP is 8.3. Seven things change behaviour. Five fail loudly and you
-will see them immediately. Two fail quietly and will not show up until a
-request reaches Twitch carrying the wrong data. Those two are marked.
+Minimum PHP is 8.3. Seven things change behaviour. Most fail loudly and you will
+see them immediately. Three carry a case that does not raise anything at all,
+and will not show up until a request reaches Twitch carrying the wrong data.
+Those three are marked.
 
 | What | How to tell | What to do |
 | --- | --- | --- |
@@ -34,7 +35,7 @@ request reaches Twitch carrying the wrong data. Those two are marked.
 | **Pre-encoded query values are now double-encoded** <br> quiet | You call `rawurlencode()` or `urlencode()` on a value before passing it to a library method. Searches return nothing, or cursors stop working. | Remove your own encoding and pass the raw value. The library encodes now. |
 | **Removed methods** <br> loud | Fatal error, undefined method. All of them called endpoints Twitch withdrew, so they were failing at the API already. | See the replacement table below. |
 | **`isValidAccessToken()` returns false instead of throwing** <br> quiet | You wrapped it in try/catch and treated reaching the next line as "valid", without checking the return value. | Check the return value. If you already did, nothing changes: the false takes the branch your catch used to. |
-| **Untyped parameters are now typed** <br> loud | `TypeError` naming the parameter. | Pass the declared type. These were being silently coerced before. |
+| **Untyped parameters are now typed** <br> loud, except one | `TypeError` naming the parameter. | Pass the declared type. These were being silently coerced before. The exception is `searchChannels()`, below. |
 | **`getAuthUrl()` output is now encoded** <br> loud, if you assert on it | A test comparing the authorize URL string fails. | Update the expected string. The old output was malformed whenever a scope list or a redirect with a query was involved. |
 | **`refreshToken()` parameter renamed** <br> loud | Only if you call it with named arguments: `refreshToken(refeshToken: $t)`. | Spell it `refreshToken:`. |
 
@@ -87,6 +88,24 @@ grep -rn "urlencode" --include="*.php" . | grep -i twitch
 You are only affected if the encoded value is passed *into* a library method.
 Encoding values for your own URLs elsewhere is unrelated and should stay.
 
+### searchChannels, if you passed a string for $liveOnly
+
+The third argument was untyped and is now `?bool`. Every other newly typed
+parameter raises a `TypeError` when given the wrong thing. This one does not,
+because a non-empty string coerces to `true`:
+
+```php
+// 7.x sent live_only=false. 8.0.0 sends live_only=1, the opposite.
+$api->getSearchApi()->searchChannels($token, $term, 'false');
+
+// Pass a real boolean and both releases agree.
+$api->getSearchApi()->searchChannels($token, $term, false);
+```
+
+Only a string matters here. `false`, `null` and omitting the argument all behave
+as they did. If your call site passes a literal `true` or `false`, or a variable
+that holds one, there is nothing to do.
+
 ### What looks like it breaks but does not
 
 The typed exceptions extend the Guzzle classes they replace, so an existing
@@ -136,6 +155,9 @@ or UNSURE, with the file and line for every YES:
    `createPoll`, `updateChannelStreamSchedule`, `searchChannels`, and
    `HelixGuzzleClient::getConfig` or `::send`. Flag any passing a type other
    than the one 8.0.0 declares. These used to be coerced silently.
+   SILENT FAILURE in one case: `searchChannels` takes `?bool $liveOnly` as its
+   third argument. A string there, `'false'` most of all, coerces to true and
+   inverts the filter with no error. Flag any non-boolean third argument.
 
 6. getAuthUrl output. Does any test or code compare the authorize URL as a
    string? Its output is url encoded in 8.0.0.
@@ -183,7 +205,9 @@ and line for every YES:
 5. Untyped parameters now typed. `getUserAccessToken`, `createCustomReward`,
    `updateCustomReward`, `modifyChannelInfo`, `createPoll`,
    `updateChannelStreamSchedule`, `searchChannels`,
-   `HelixGuzzleClient::getConfig` and `::send`.
+   `HelixGuzzleClient::getConfig` and `::send`. SILENT FAILURE for
+   `searchChannels`: a string third argument coerces to true and inverts the
+   live filter with no error.
 6. getAuthUrl output compared as a string anywhere.
 7. refreshToken called with the misspelled named argument.
 8. Legacy namespace. ADVISORY, NOT BREAKING. Imports of `NewTwitchApi\`.

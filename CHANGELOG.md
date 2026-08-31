@@ -50,6 +50,8 @@ seven things change behaviour and two of them fail silently.
 - `OauthApi::revokeToken()`, and the device code grant flow via
   `getDeviceCode()` and `getDeviceAccessToken()`.
 - An opt-in replay window on `EventSubApi::verifySignature()`.
+- An optional `$baseUri` on the `OauthApi` constructor, so the token endpoint
+  can be pointed at a local double in tests.
 - Five optional parameters Twitch added to existing endpoints since 7.2.0:
   `subscription_id` and `conduit_id` on Get EventSub Subscriptions, `pin` on
   Send Chat Message, `for_source_only` on Send Chat Announcement, and
@@ -75,14 +77,21 @@ seven things change behaviour and two of them fail silently.
 
 - The Guzzle constraint is `^7.15.2|^8.0`. The old range allowed Guzzle 6,
   which is end of life, and 7.x releases carrying nine advisories.
-- Properties and parameters are typed throughout. PHPStan runs at level 8.
-- The test suite is PHPUnit 11 alone: 577 tests, up from 342 phpspec examples
+- Properties and parameters are typed throughout. PHPStan runs at level 8. One
+  of these is a silent change rather than a `TypeError`:
+  `SearchApi::searchChannels()` now declares `?bool $liveOnly`, and a string
+  passed there coerces to true. See UPGRADING.md.
+- `TwitchApi` accepts any PSR-18 client, not only `HelixGuzzleClient`. The
+  resource classes already did; the facade is the documented way in and now
+  matches.
+- The test suite is PHPUnit 11 alone: 580 tests, up from 342 phpspec examples
   and 2 tests.
 
 ### Deprecated
 
-- The `NewTwitchApi\` namespace. It has aliased `TwitchApi\` since 6.0.0 and
-  still works, but 8.0.0 is the last release guaranteed to carry it.
+- The `NewTwitchApi\` namespace, now carrying `@deprecated` so an IDE or static
+  analyser says so too. It has aliased `TwitchApi\` since 6.0.0 and still works,
+  but 8.0.0 is the last release guaranteed to carry it.
 
 ## [7.3.0] - 2026-08-30
 
