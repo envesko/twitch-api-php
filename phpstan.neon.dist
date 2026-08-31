@@ -6,14 +6,14 @@ parameters:
 
     # Pinned so results do not depend on which PHP the analyser happens to run on, and
     # checked across the whole supported range rather than one version, which is what
-    # catches syntax or behaviour valid on 8.x but broken on the 7.4 floor.
+    # catches syntax or behaviour valid on the newest supported version but broken on the 8.3 floor.
     #
     # Version-specific deprecations that only apply at part of this range are not reported
     # here. Those are covered at runtime instead by bin/check-deprecations.php, which runs
     # on the actual PHP under test.
     phpVersion:
-        min: 70400
-        max: 80400
+        min: 80300
+        max: 80500
 
     treatPhpDocTypesAsCertain: false
 
