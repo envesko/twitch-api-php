@@ -271,4 +271,30 @@ class ChatApiTest extends ResourceTestCase
             ['after', 'cursor'],
         ]);
     }
+
+    public function testSendChatMessageCanPinTheMessage(): void
+    {
+        // Added by Twitch on 2026-05-15.
+        $this->api()->sendChatMessage(self::TOKEN, '123', '456', 'hello', null, null, true);
+
+        $this->assertSent('POST', 'chat/messages');
+        $this->assertSentBody([
+            'broadcaster_id' => '123',
+            'sender_id' => '456',
+            'message' => 'hello',
+            'pin' => true,
+        ]);
+    }
+
+    public function testSendChatAnnouncementCanTargetTheSourceChannelOnly(): void
+    {
+        // Added by Twitch on 2026-04-02.
+        $this->api()->sendChatAnnouncement(self::TOKEN, '123', '456', 'hello', null, true);
+
+        $this->assertSent('POST', 'chat/announcements', [
+            ['broadcaster_id', '123'],
+            ['moderator_id', '456'],
+        ]);
+        $this->assertSentBody(['message' => 'hello', 'for_source_only' => true]);
+    }
 }

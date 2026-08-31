@@ -704,4 +704,24 @@ class EventSubApiTest extends ResourceTestCase
 
         $this->assertSubscribed('channel.channel_points_custom_reward_redemption.update', '1', ['broadcaster_user_id' => '12345', 'reward_id' => 'REWARD']);
     }
+
+    public function testGetEventSubSubscriptionFiltersBySubscriptionId(): void
+    {
+        // Added by Twitch on 2025-05-09.
+        $this->api()->getEventSubSubscription(self::TOKEN, null, null, null, null, 'sub-1');
+
+        $this->assertSent('GET', 'eventsub/subscriptions', [
+            ['subscription_id', 'sub-1'],
+        ]);
+    }
+
+    public function testGetEventSubSubscriptionFiltersByConduitId(): void
+    {
+        // Added by Twitch on 2026-04-17.
+        $this->api()->getEventSubSubscription(self::TOKEN, null, null, null, null, null, 'conduit-1');
+
+        $this->assertSent('GET', 'eventsub/subscriptions', [
+            ['conduit_id', 'conduit-1'],
+        ]);
+    }
 }

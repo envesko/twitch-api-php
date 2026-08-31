@@ -147,4 +147,15 @@ class ClipsApiTest extends ResourceTestCase
         $this->assertSent('POST', 'videos/clips');
         $this->assertSentBody(['video_id' => 'vid', 'offset_seconds' => 30, 'duration_seconds' => 60]);
     }
+
+    public function testGetClipsCanFilterToFeaturedClips(): void
+    {
+        // Added by Twitch on 2023-09-12.
+        $this->api()->getClipsByBroadcasterId(self::TOKEN, '123', null, null, null, null, null, true);
+
+        $this->assertSent('GET', 'clips', [
+            ['broadcaster_id', '123'],
+            ['is_featured', '1'],
+        ]);
+    }
 }
