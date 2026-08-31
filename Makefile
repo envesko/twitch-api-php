@@ -13,3 +13,6 @@ check-deprecations:
 
 stan:
 	vendor/bin/phpstan analyse --no-progress
+
+release-check:
+	php bin/check-changelog.php $(VERSION)
