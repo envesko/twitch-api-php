@@ -133,17 +133,24 @@ class OauthApi
      */
     private function getPartialAuthUrl(string $redirectUri, string $responseType = 'code', string $scope = '', bool $forceVerify = false, ?string $state = null): string
     {
-        $optionalParameters = '';
-        $optionalParameters .= $forceVerify ? '&force_verify=true' : '';
-        $optionalParameters .= $state ? sprintf('&state=%s', $state) : '';
+        // Built with http_build_query rather than sprintf. A scope list is space separated
+        // and a redirect URI often carries a query string of its own, so interpolating
+        // these produced a URL Twitch rejected.
+        $parameters = [
+            'client_id' => $this->clientId,
+            'redirect_uri' => $redirectUri,
+            'response_type' => $responseType,
+            'scope' => $scope,
+        ];
 
-        return sprintf(
-            'authorize?client_id=%s&redirect_uri=%s&response_type=%s&scope=%s%s',
-            $this->clientId,
-            $redirectUri,
-            $responseType,
-            $scope,
-            $optionalParameters
-        );
+        if ($forceVerify) {
+            $parameters['force_verify'] = 'true';
+        }
+
+        if ($state) {
+            $parameters['state'] = $state;
+        }
+
+        return 'authorize?'.http_build_query($parameters, '', '&', PHP_QUERY_RFC3986);
     }
 }

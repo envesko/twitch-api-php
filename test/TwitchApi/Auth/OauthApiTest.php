@@ -56,7 +56,7 @@ class OauthApiTest extends TestCase
     public function testGetAuthUrl(): void
     {
         $this->assertSame(
-            'https://id.twitch.tv/oauth2/authorize?client_id=client-id&redirect_uri=https://redirect.url&response_type=code&scope=',
+            'https://id.twitch.tv/oauth2/authorize?client_id=client-id&redirect_uri=https%3A%2F%2Fredirect.url&response_type=code&scope=',
             $this->api()->getAuthUrl('https://redirect.url')
         );
     }
@@ -138,5 +138,21 @@ class OauthApiTest extends TestCase
         $this->expectException(\GuzzleHttp\Exception\ClientException::class);
 
         $this->api(401)->isValidAccessToken('invalid-user-access-token');
+    }
+
+    public function testGetAuthUrlEncodesScopesStateAndARedirectWithItsOwnQuery(): void
+    {
+        // Up to 7.x these were interpolated raw, so a space-separated scope list or a
+        // redirect carrying a query string produced a URL Twitch rejected.
+        $this->assertSame(
+            'https://id.twitch.tv/oauth2/authorize'
+                .'?client_id=client-id'
+                .'&redirect_uri=https%3A%2F%2Fredirect.url%3Fa%3D1'
+                .'&response_type=code'
+                .'&scope=user%3Aread%3Aemail%20chat%3Aread'
+                .'&force_verify=true'
+                .'&state=st%26te',
+            $this->api()->getAuthUrl('https://redirect.url?a=1', 'code', 'user:read:email chat:read', true, 'st&te')
+        );
     }
 }
