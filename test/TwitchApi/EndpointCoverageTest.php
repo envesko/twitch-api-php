@@ -26,14 +26,7 @@ class EndpointCoverageTest extends TestCase
      * Endpoints the library calls that Twitch has since withdrawn. They are kept for the whole
      * of 7.x because removing them is a breaking change, and are deleted in 8.0.
      */
-    private const WITHDRAWN = [
-        'GET entitlements/codes',
-        'GET hypetrain/events',
-        'GET users/follows',
-        'GET webhooks/subscriptions',
-        'POST entitlements/code',
-        'POST entitlements/upload',
-    ];
+    private const WITHDRAWN = [];
 
     /**
      * Methods this harness cannot drive, because a plausible argument cannot be guessed from
@@ -41,7 +34,6 @@ class EndpointCoverageTest extends TestCase
      */
     private const NOT_DRIVABLE = [
         'EventSubApi::verifySignature',
-        'TagsApi::replaceStreamTags',
     ];
 
     /**

@@ -78,64 +78,6 @@ class UsersApiTest extends ResourceTestCase
         ]);
     }
 
-    public function testShouldGetUsersFollowsByFollowerId(): void
-    {
-        $this->api()->getUsersFollows(self::TOKEN, '12345');
-
-        $this->assertSent('GET', 'users/follows', [
-            ['from_id', '12345'],
-        ]);
-    }
-
-    public function testShouldGetUsersFollowsByFollowedId(): void
-    {
-        $this->api()->getUsersFollows(self::TOKEN, null, '12345');
-
-        $this->assertSent('GET', 'users/follows', [
-            ['to_id', '12345'],
-        ]);
-    }
-
-    public function testShouldGetUsersFollowsByFollowerIdAndFollowedId(): void
-    {
-        $this->api()->getUsersFollows(self::TOKEN, '12345', '98765');
-
-        $this->assertSent('GET', 'users/follows', [
-            ['from_id', '12345'],
-            ['to_id', '98765'],
-        ]);
-    }
-
-    public function testShouldGetUsersFollowsPageByFirst(): void
-    {
-        $this->api()->getUsersFollows(self::TOKEN, null, null, 42);
-
-        $this->assertSent('GET', 'users/follows', [
-            ['first', '42'],
-        ]);
-    }
-
-    public function testShouldGetUsersFollowsPageByAfter(): void
-    {
-        $this->api()->getUsersFollows(self::TOKEN, null, null, null, '42');
-
-        $this->assertSent('GET', 'users/follows', [
-            ['after', '42'],
-        ]);
-    }
-
-    public function testShouldGetUsersFollowsByEverything(): void
-    {
-        $this->api()->getUsersFollows(self::TOKEN, '12345', '98765', 42, '99');
-
-        $this->assertSent('GET', 'users/follows', [
-            ['from_id', '12345'],
-            ['to_id', '98765'],
-            ['first', '42'],
-            ['after', '99'],
-        ]);
-    }
-
     public function testShouldUpdateUser(): void
     {
         $this->api()->updateUser(self::TOKEN);

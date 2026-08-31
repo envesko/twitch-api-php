@@ -56,33 +56,4 @@ class TagsApiTest extends ResourceTestCase
             ['broadcaster_id', '123'],
         ]);
     }
-
-    public function testShouldReplaceStreamTags(): void
-    {
-        $this->api()->replaceStreamTags(self::TOKEN, '123');
-
-        $this->assertSent('PUT', 'streams/tags', [
-            ['broadcaster_id', '123'],
-        ]);
-    }
-
-    public function testShouldReplaceStreamTagsWithOneTag(): void
-    {
-        $this->api()->replaceStreamTags(self::TOKEN, '123', ['456']);
-
-        $this->assertSent('PUT', 'streams/tags', [
-            ['broadcaster_id', '123'],
-        ]);
-        $this->assertSentBody(['tag_ids' => ['456']]);
-    }
-
-    public function testShouldReplaceStreamTagsWithMultipleTags(): void
-    {
-        $this->api()->replaceStreamTags(self::TOKEN, '123', ['456', '789']);
-
-        $this->assertSent('PUT', 'streams/tags', [
-            ['broadcaster_id', '123'],
-        ]);
-        $this->assertSentBody(['tag_ids' => ['456', '789']]);
-    }
 }

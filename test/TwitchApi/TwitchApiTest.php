@@ -46,7 +46,7 @@ class TwitchApiTest extends TestCase
     {
         $cases = [];
 
-        foreach (['Oauth' => 'Auth\\OauthApi', 'WebhooksSubscription' => 'Webhooks\\WebhooksSubscriptionApi'] as $name => $class) {
+        foreach (['Oauth' => 'Auth\\OauthApi'] as $name => $class) {
             $cases[$name] = ['get'.$name.'Api', 'TwitchApi\\'.$class];
         }
 
@@ -55,7 +55,7 @@ class TwitchApiTest extends TestCase
             'Conduits', 'ContentClassificationLabels', 'Entitlements', 'EventSub', 'Extensions',
             'Games', 'Goals', 'GuestStar', 'HypeTrain', 'Moderation', 'Polls', 'Predictions',
             'Raids', 'Schedule', 'Search', 'SharedChat', 'Streams', 'Subscriptions', 'Tags',
-            'Teams', 'Users', 'Videos', 'Webhooks', 'Whispers',
+            'Teams', 'Users', 'Videos', 'Whispers',
         ];
 
         foreach ($resources as $name) {

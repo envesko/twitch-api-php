@@ -14,47 +14,6 @@ class EntitlementsApiTest extends ResourceTestCase
         return EntitlementsApi::class;
     }
 
-    public function testShouldCreateEntitlementGrantsUploadUrl(): void
-    {
-        $this->api()->createEntitlementGrantsUploadURL(self::TOKEN, '123', 'bulk_drops_grant');
-
-        $this->assertSent('POST', 'entitlements/upload', [
-            ['manifest_id', '123'],
-            ['type', 'bulk_drops_grant'],
-        ]);
-    }
-
-    public function testShouldCreateEntitlementGrantsUploadUrlShorthand(): void
-    {
-        $this->api()->createEntitlementGrantsUploadURL(self::TOKEN, '123');
-
-        $this->assertSent('POST', 'entitlements/upload', [
-            ['manifest_id', '123'],
-            ['type', 'bulk_drops_grant'],
-        ]);
-    }
-
-    public function testShouldGetCodeStatus(): void
-    {
-        $this->api()->getCodeStatus(self::TOKEN, 123, ['abc']);
-
-        $this->assertSent('GET', 'entitlements/codes', [
-            ['user_id', '123'],
-            ['code', 'abc'],
-        ]);
-    }
-
-    public function testShouldGetCodesStatus(): void
-    {
-        $this->api()->getCodeStatus(self::TOKEN, 123, ['abc', 'def']);
-
-        $this->assertSent('GET', 'entitlements/codes', [
-            ['user_id', '123'],
-            ['code', 'abc'],
-            ['code', 'def'],
-        ]);
-    }
-
     public function testShouldGetDropEntitlementsById(): void
     {
         $this->api()->getDropsEntitlements(self::TOKEN, '123');
@@ -110,27 +69,6 @@ class EntitlementsApiTest extends ResourceTestCase
 
         $this->assertSent('GET', 'entitlements/drops', [
             ['fulfillment_status', 'CLAIMED'],
-        ]);
-    }
-
-    public function testShouldRedeemCode(): void
-    {
-        $this->api()->redeemCode(self::TOKEN, 123, ['abc']);
-
-        $this->assertSent('POST', 'entitlements/code', [
-            ['user_id', '123'],
-            ['code', 'abc'],
-        ]);
-    }
-
-    public function testShouldRedeemCodes(): void
-    {
-        $this->api()->redeemCode(self::TOKEN, 123, ['abc', 'def']);
-
-        $this->assertSent('POST', 'entitlements/code', [
-            ['user_id', '123'],
-            ['code', 'abc'],
-            ['code', 'def'],
         ]);
     }
 

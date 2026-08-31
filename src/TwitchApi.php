@@ -36,9 +36,7 @@ use TwitchApi\Resources\TagsApi;
 use TwitchApi\Resources\TeamsApi;
 use TwitchApi\Resources\UsersApi;
 use TwitchApi\Resources\VideosApi;
-use TwitchApi\Resources\WebhooksApi;
 use TwitchApi\Resources\WhispersApi;
-use TwitchApi\Webhooks\WebhooksSubscriptionApi;
 
 class TwitchApi
 {
@@ -74,9 +72,7 @@ class TwitchApi
     private $teamsApi;
     private $usersApi;
     private $videosApi;
-    private $webhooksApi;
     private $whispersApi;
-    private $webhooksSubscriptionApi;
     private $conduitsApi;
     private $contentClassificationLabelsApi;
     private $extensionsApi;
@@ -226,19 +222,9 @@ class TwitchApi
         return $this->videosApi ??= new VideosApi($this->helixGuzzleClient, $this->requestGenerator());
     }
 
-    public function getWebhooksApi(): WebhooksApi
-    {
-        return $this->webhooksApi ??= new WebhooksApi($this->helixGuzzleClient, $this->requestGenerator());
-    }
-
     public function getWhispersApi(): WhispersApi
     {
         return $this->whispersApi ??= new WhispersApi($this->helixGuzzleClient, $this->requestGenerator());
-    }
-
-    public function getWebhooksSubscriptionApi(): WebhooksSubscriptionApi
-    {
-        return $this->webhooksSubscriptionApi ??= new WebhooksSubscriptionApi($this->clientId, $this->clientSecret, $this->helixGuzzleClient);
     }
 
     public function getConduitsApi(): ConduitsApi
