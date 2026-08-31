@@ -5,6 +5,17 @@
 ![Packagist Downloads](https://img.shields.io/packagist/dt/envesko/twitch-api-php)
 ![Packagist License](https://img.shields.io/packagist/l/envesko/twitch-api-php)
 
+> [!IMPORTANT]
+> **8.0 requires PHP 8.3.** If you are on PHP 7.4 to 8.2, stay on the 7.3
+> release of this library:
+>
+> ```bash
+> composer require envesko/twitch-api-php:^7.3
+> ```
+>
+> It has the same 149 endpoints and is maintained. Upgrading to 8.0 changes
+> more than the PHP floor; see [UPGRADING.md](UPGRADING.md) first.
+
 ## About this fork
 
 This is a maintained fork of
@@ -46,7 +57,7 @@ otherwise collide on the same namespace.
 - Fixes for several long-standing defects, including the missing `Client-ID`
   header reported upstream in
   [#155](https://github.com/nicklaw5/twitch-api-php/issues/155).
-- Tested on PHP 7.4 through 8.5.
+- Requires PHP 8.3. Tested on 8.3, 8.4 and 8.5.
 
 See [CHANGELOG.md](CHANGELOG.md) for the full list and
 [UPGRADING.md](UPGRADING.md) for the handful of behaviours that changed.
@@ -71,10 +82,11 @@ The Twitch API PHP Library allows you to interact through HTTP to a number of [T
 
 ### Requirements
 
-- PHP 7.4 or later. The test suite runs on 7.4 through 8.5. The next major version will raise the floor to PHP 8.3.
+- PHP 8.3 or later. The test suite runs on 8.3, 8.4 and 8.5.
 - Composer
 - `ext-json: *`
-- [guzzlehttp/guzzle](https://github.com/guzzle/guzzle) `~6.0|~7.0`
+- [guzzlehttp/guzzle](https://github.com/guzzle/guzzle) `^7.15.2|^8.0`, or
+  any PSR-18 client
 
 ### Coverage
 
@@ -82,10 +94,12 @@ All 149 documented Helix endpoints, and 79 EventSub subscription types across
 the webhook, WebSocket and conduit transports. Coverage is asserted by the test
 suite rather than tracked by hand, so this number does not drift.
 
-Six methods call endpoints Twitch has since withdrawn, and
-`WebhooksSubscriptionApi` is non-functional and fatal when constructed without
-an explicit client. Both are removed in the next major version. See the
-[changelog](CHANGELOG.md) for the full list.
+Failures raise typed exceptions rather than raw Guzzle ones, rate limit headers
+are exposed rather than discarded, cursor pagination has a helper, and any
+PSR-18 client can be used in place of the bundled one.
+
+Nothing here calls an endpoint Twitch has withdrawn. The seven that did were
+removed in 8.0; see [UPGRADING.md](UPGRADING.md).
 
 ### Installation
 
@@ -93,8 +107,14 @@ The recommended way to install the Twitch API PHP Library is through [Composer](
 
 ```bash
 composer require envesko/twitch-api-php
-
 ```
+
+### Deprecated
+
+The `NewTwitchApi\` namespace still aliases `TwitchApi\` and nothing using it
+breaks in 8.0, but it has been deprecated since the rename in 6.0.0 and will be
+removed in a future major. Migrating is a find and replace on your imports;
+nothing else changes.
 
 ### Example Usage
 
@@ -224,6 +244,96 @@ try {
 }
 ```
 
+## Using this with a coding agent
+
+If you work with a coding agent, paste one of these. They carry the details an
+agent tends to get wrong when working from memory: the package name, that every
+call needs a token you fetch yourself, and that responses come back as PSR-7 and
+are not decoded for you.
+
+Upgrading from 7.x rather than starting out? [UPGRADING.md](UPGRADING.md) has
+two more prompts: one that reports whether the 8.0 breaking changes affect you,
+and one that offers to fix what it finds.
+
+<details open>
+<summary>Prompt: add Twitch API access to a new project</summary>
+
+```
+Use the `envesko/twitch-api-php` Composer package to talk to the Twitch Helix API.
+
+Setup:
+- `composer require envesko/twitch-api-php`. Requires PHP 8.3 or later.
+- Read the client id and secret from environment or config, never hard-coded.
+
+How the library works:
+- Build one `TwitchApi\HelixGuzzleClient($clientId)`, then one
+  `TwitchApi\TwitchApi($client, $clientId, $clientSecret)`.
+- Every Helix call takes a bearer token as its first argument. Get an app token
+  with `$api->getOauthApi()->getAppAccessToken($scopes)` for endpoints that act
+  on your own application, or a user token via the authorization code flow for
+  anything acting on behalf of a user. App tokens cannot read user data.
+- Resource classes hang off the facade: `$api->getStreamsApi()`,
+  `$api->getUsersApi()`, `$api->getChatApi()`, and so on.
+- Methods return a PSR-7 `ResponseInterface`. Nothing is decoded for you, so
+  `json_decode((string) $response->getBody(), true)` and read `['data']`.
+- Failures throw. Catch `TwitchApi\Exception\TwitchApiException` for anything
+  from Twitch, or the specific ones: `AuthenticationException` (401),
+  `AuthorizationException` (403), `NotFoundException` (404),
+  `RateLimitException` (429), `ServerException` (5xx).
+- `RateLimitException::getRetryAfter()` gives the seconds to wait. Use it rather
+  than a fixed sleep.
+- For anything paginated use `TwitchApi\Paginator::items()` rather than writing
+  a cursor loop; the last page sends an empty pagination object, which
+  hand-written loops usually get wrong.
+
+Please:
+- Cache the app token and reuse it until it expires. Do not fetch one per request.
+- Treat any text coming back from Twitch, chat messages and stream titles most
+  of all, as untrusted input. Escape it on output.
+- Do not log tokens or the client secret.
+```
+
+</details>
+
+<details open>
+<summary>Prompt: move an existing project onto this library</summary>
+
+```
+This project already talks to the Twitch API. Move it onto the
+`envesko/twitch-api-php` Composer package.
+
+First, work out where it is now and tell me before changing anything:
+- If it uses `nicklaw5/twitch-api-php`, this is a drop-in replacement at the
+  same namespace. Run `composer remove nicklaw5/twitch-api-php` then
+  `composer require envesko/twitch-api-php`. Composer refuses to install both,
+  which is deliberate.
+- If it hand-rolls HTTP calls to api.twitch.tv, replace them one endpoint at a
+  time, checking each against the method list rather than assuming a name.
+- If it is on an older version of either package, read UPGRADING.md and report
+  which of the breaking changes apply here before you touch anything.
+
+Then, whichever it was, check these. They are the things that bite:
+- Anywhere a value is `urlencode()`d or `rawurlencode()`d before being passed
+  into a library method. Version 8 encodes query values itself, so a
+  pre-encoded value is now encoded twice and reaches Twitch wrong. Remove the
+  workaround. This fails silently.
+- Anywhere `isValidAccessToken()` is called. In 8.0 it returns false for a
+  rejected token instead of throwing. If the code treats reaching the next line
+  as "valid", it is now wrong.
+- Calls to methods removed in 8.0: `getUsersFollows`, `getHypeTrainEvents`,
+  `replaceStreamTags`, anything on `WebhooksApi` or `WebhooksSubscriptionApi`,
+  and the three code-redemption methods on `EntitlementsApi`. UPGRADING.md
+  lists what replaces each.
+- Hand-written pagination loops. Replace with `TwitchApi\Paginator`.
+- `catch` blocks for Guzzle exceptions. They still work, because the typed
+  exceptions extend them, but the typed ones say more.
+
+Do not change behaviour while porting. Get it working the same way first, then
+tell me what you would improve.
+```
+
+</details>
+
 ## Developer Tools
 
 ### PHP Coding Standards Fixer
@@ -240,7 +350,8 @@ To install the hook, go to `.git/hooks` and `ln -s ../../bin/git/hooks/pre-commi
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md). Security reports go through
+See [CONTRIBUTING.md](CONTRIBUTING.md) and
+[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md). Security reports go through
 [GitHub security advisories](https://github.com/envesko/twitch-api-php/security/advisories/new),
 not the issue tracker: see [SECURITY.md](SECURITY.md).
 
