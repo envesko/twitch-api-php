@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace TwitchApi;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\BadResponseException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use TwitchApi\Exception\ExceptionFactory;
 
 class HelixGuzzleClient
 {
@@ -78,6 +80,12 @@ class HelixGuzzleClient
 
     public function send(RequestInterface $request): ResponseInterface
     {
-        return $this->client->send($request);
+        try {
+            return $this->client->send($request);
+        } catch (BadResponseException $e) {
+            // Rethrown as the typed equivalent, which extends the Guzzle class it replaces,
+            // so an existing catch for GuzzleException still matches.
+            throw ExceptionFactory::from($e);
+        }
     }
 }

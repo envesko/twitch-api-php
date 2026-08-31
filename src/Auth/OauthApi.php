@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace TwitchApi\Auth;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\RequestOptions;
 use Psr\Http\Message\ResponseInterface;
+use TwitchApi\Exception\ExceptionFactory;
 
 class OauthApi
 {
@@ -204,7 +206,11 @@ class OauthApi
      */
     private function makeRequest(Request $request, array $options = []): ResponseInterface
     {
-        return $this->guzzleClient->send($request, $options);
+        try {
+            return $this->guzzleClient->send($request, $options);
+        } catch (BadResponseException $e) {
+            throw ExceptionFactory::from($e);
+        }
     }
 
     /**
