@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit bootstrap="vendor/autoload.php"
-         colors="true">
+<phpunit bootstrap="vendor/autoload.php" colors="true" cacheDirectory=".phpunit.cache">
   <testsuites>
     <testsuite name="tests">
       <directory>test</directory>
     </testsuite>
   </testsuites>
-  <filter>
-    <whitelist>
+  <source>
+    <include>
       <directory suffix=".php">src</directory>
-      <exclude>
-        <directory suffix="Interface.php">src/</directory>
-      </exclude>
-    </whitelist>
-  </filter>
+    </include>
+    <exclude>
+      <directory suffix="Interface.php">src/</directory>
+    </exclude>
+  </source>
 </phpunit>

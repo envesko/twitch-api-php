@@ -35,13 +35,13 @@
     "nicklaw5/twitch-api-php": "*"
   },
   "require": {
-    "php": ">=7.4.0",
+    "php": ">=8.3",
     "ext-json": "*",
-    "guzzlehttp/guzzle": "~6.0|~7.0"
+    "guzzlehttp/guzzle": "^7.15.2|^8.0"
   },
   "require-dev": {
     "friendsofphp/php-cs-fixer": "^3.10",
-    "phpunit/phpunit": "^9.5",
+    "phpunit/phpunit": "^11.5",
     "phpstan/phpstan": "^2.2"
   },
   "autoload": {
