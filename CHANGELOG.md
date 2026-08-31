@@ -68,7 +68,7 @@ seven things change behaviour and two of them fail silently.
   return true or throw, because Guzzle raises on a 4xx before the status code
   can be read.
 - Three parameters declared optional before a required one, which PHP has
-  reported as deprecated since 8.0.
+  reported as deprecated since PHP 8.0.
 - `OauthApi::refreshToken()` no longer misspells its parameter.
 
 ### Changed
@@ -82,7 +82,7 @@ seven things change behaviour and two of them fail silently.
 ### Deprecated
 
 - The `NewTwitchApi\` namespace. It has aliased `TwitchApi\` since 6.0.0 and
-  still works, but 8.0 is the last release guaranteed to carry it.
+  still works, but 8.0.0 is the last release guaranteed to carry it.
 
 ## [7.3.0] - 2026-08-30
 
@@ -156,14 +156,14 @@ change. All are removed or repaired in 8.0.
   is fatal to autoload.
 - `ScheduleApi::getChanneliCalendar()` and two private EventSub helpers declare
   an optional parameter before a required one, which PHP has reported as
-  deprecated since 8.0. Fixing it reorders parameters.
+  deprecated since PHP 8.0. Fixing it reorders parameters.
 - Query parameter values are interpolated into the URL unencoded. A value
   containing `&` splits into extra parameters, a base64 pagination cursor is
   corrupted because its `+` decodes as a space, a `#` truncates the value into
   a URI fragment, and a user-supplied search term can append query parameters
   of its own to the outgoing request. Encoding them would double-encode any
   consumer who worked around this by pre-encoding, which is a breaking change,
-  so it is held for 8.0 rather than shipped in a minor release.
+  so it is held for 8.0.0 rather than shipped in a minor release.
 - `OauthApi::getAuthUrl()` does not encode its query parameters, for the same
   reason.
 - Six methods call endpoints Twitch has withdrawn.

@@ -23,7 +23,7 @@ out of date.
 
 ## The test harness
 
-PHPUnit, for everything. phpspec was removed in 8.0 because its newest release
+PHPUnit, for everything. phpspec was removed in 8.0.0 because its newest release
 cannot install above PHP 8.3.
 
 Resource tests assert that a method delegates with the right verb, endpoint and

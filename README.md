@@ -6,14 +6,14 @@
 ![Packagist License](https://img.shields.io/packagist/l/envesko/twitch-api-php)
 
 > [!IMPORTANT]
-> **8.0 requires PHP 8.3.** If you are on PHP 7.4 to 8.2, stay on the 7.3
+> **8.0.0 requires PHP 8.3.** If you are on PHP 7.4 to 8.2, stay on the 7.3.0
 > release of this library:
 >
 > ```bash
-> composer require envesko/twitch-api-php:^7.3
+> composer require envesko/twitch-api-php:^7.3.0
 > ```
 >
-> It has the same 149 endpoints and is maintained. Upgrading to 8.0 changes
+> It has the same 149 endpoints and is maintained. Upgrading to 8.0.0 changes
 > more than the PHP floor; see [UPGRADING.md](UPGRADING.md) first.
 
 ## About this fork
@@ -99,7 +99,7 @@ are exposed rather than discarded, cursor pagination has a helper, and any
 PSR-18 client can be used in place of the bundled one.
 
 Nothing here calls an endpoint Twitch has withdrawn. The seven that did were
-removed in 8.0; see [UPGRADING.md](UPGRADING.md).
+removed in 8.0.0; see [UPGRADING.md](UPGRADING.md).
 
 ### Installation
 
@@ -112,8 +112,8 @@ composer require envesko/twitch-api-php
 ### Deprecated
 
 The `NewTwitchApi\` namespace still aliases `TwitchApi\` and nothing using it
-breaks in 8.0, but it has been deprecated since the rename in 6.0.0 and will be
-removed in a future major. Migrating is a find and replace on your imports;
+breaks in 8.0.0, but it has been deprecated since the rename in 6.0.0 and will
+be removed in a future major. Migrating is a find and replace on your imports;
 nothing else changes.
 
 ### Example Usage
@@ -252,8 +252,8 @@ call needs a token you fetch yourself, and that responses come back as PSR-7 and
 are not decoded for you.
 
 Upgrading from 7.x rather than starting out? [UPGRADING.md](UPGRADING.md) has
-two more prompts: one that reports whether the 8.0 breaking changes affect you,
-and one that offers to fix what it finds.
+two more prompts: one that reports whether the 8.0.0 breaking changes affect
+you, and one that offers to fix what it finds.
 
 <details open>
 <summary>Prompt: add Twitch API access to a new project</summary>
@@ -317,10 +317,10 @@ Then, whichever it was, check these. They are the things that bite:
   into a library method. Version 8 encodes query values itself, so a
   pre-encoded value is now encoded twice and reaches Twitch wrong. Remove the
   workaround. This fails silently.
-- Anywhere `isValidAccessToken()` is called. In 8.0 it returns false for a
+- Anywhere `isValidAccessToken()` is called. In 8.0.0 it returns false for a
   rejected token instead of throwing. If the code treats reaching the next line
   as "valid", it is now wrong.
-- Calls to methods removed in 8.0: `getUsersFollows`, `getHypeTrainEvents`,
+- Calls to methods removed in 8.0.0: `getUsersFollows`, `getHypeTrainEvents`,
   `replaceStreamTags`, anything on `WebhooksApi` or `WebhooksSubscriptionApi`,
   and the three code-redemption methods on `EntitlementsApi`. UPGRADING.md
   lists what replaces each.
