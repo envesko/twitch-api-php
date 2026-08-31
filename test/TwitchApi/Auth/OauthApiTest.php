@@ -129,15 +129,55 @@ class OauthApiTest extends TestCase
         $this->assertTrue($this->api(200)->isValidAccessToken('user-access-token'));
     }
 
-    public function testIsValidAccessTokenThrowsOn401RatherThanReturningFalse(): void
+    public function testIsValidAccessTokenIsFalseOn401(): void
     {
-        // Documented here as it currently behaves, not as it should. Guzzle raises on a 4xx
-        // before the status code can be read, so this method can only ever return true or
-        // throw. The spec this replaced mocked the response and never saw it. Fixed in the
-        // next commit.
-        $this->expectException(\GuzzleHttp\Exception\ClientException::class);
+        // Through 7.x this threw instead. Guzzle raises on a 4xx before the status code can
+        // be read, so the method could only ever return true.
+        $this->assertFalse($this->api(401)->isValidAccessToken('invalid-user-access-token'));
+    }
 
-        $this->api(401)->isValidAccessToken('invalid-user-access-token');
+    public function testIsValidAccessTokenStillThrowsOnAServerError(): void
+    {
+        // A 5xx is not an answer about the token, so it must not be reported as one.
+        $this->expectException(\GuzzleHttp\Exception\ServerException::class);
+
+        $this->api(503)->isValidAccessToken('user-access-token');
+    }
+
+    public function testRevokeToken(): void
+    {
+        $this->api()->revokeToken('user-access-token');
+
+        $this->assertSame('POST', $this->lastRequest()->getMethod());
+        $this->assertSame('/oauth2/revoke', $this->lastRequest()->getUri()->getPath());
+        $this->assertSame([
+            'client_id' => self::CLIENT_ID,
+            'token' => 'user-access-token',
+        ], $this->sentJson());
+    }
+
+    public function testGetDeviceCode(): void
+    {
+        $this->api()->getDeviceCode('user:read:email');
+
+        $this->assertSame('/oauth2/device', $this->lastRequest()->getUri()->getPath());
+        $this->assertSame([
+            'client_id' => self::CLIENT_ID,
+            'scopes' => 'user:read:email',
+        ], $this->sentJson());
+    }
+
+    public function testGetDeviceAccessToken(): void
+    {
+        $this->api()->getDeviceAccessToken('device-code', 'user:read:email');
+
+        $this->assertSame('/oauth2/token', $this->lastRequest()->getUri()->getPath());
+        $this->assertSame([
+            'client_id' => self::CLIENT_ID,
+            'scopes' => 'user:read:email',
+            'device_code' => 'device-code',
+            'grant_type' => 'urn:ietf:params:oauth:grant-type:device_code',
+        ], $this->sentJson());
     }
 
     public function testGetAuthUrlEncodesScopesStateAndARedirectWithItsOwnQuery(): void

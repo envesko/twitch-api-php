@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace TwitchApi\Auth;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\RequestOptions;
@@ -67,13 +68,13 @@ class OauthApi
     /**
      * @throws GuzzleException
      */
-    public function refreshToken(string $refeshToken, string $scope = ''): ResponseInterface
+    public function refreshToken(string $refreshToken, string $scope = ''): ResponseInterface
     {
         $requestOptions = [
             'client_id' => $this->clientId,
             'client_secret' => $this->clientSecret,
             'grant_type' => 'refresh_token',
-            'refresh_token' => $refeshToken,
+            'refresh_token' => $refreshToken,
         ];
         if ($scope) {
             $requestOptions['scope'] = $scope;
@@ -104,11 +105,80 @@ class OauthApi
     }
 
     /**
-     * @throws GuzzleException
+     * Whether Twitch still accepts this token.
+     *
+     * Up to 7.x this could not return false. Guzzle raises on a 4xx before the status code
+     * can be read, so an invalid token threw rather than answering the question the method
+     * exists to answer. A rejected token is now a false, and only a genuine transport or
+     * server failure still throws.
+     *
+     * @throws GuzzleException on a network failure or a 5xx from Twitch
      */
     public function isValidAccessToken(string $accessToken): bool
     {
-        return $this->validateAccessToken($accessToken)->getStatusCode() === 200;
+        try {
+            return $this->validateAccessToken($accessToken)->getStatusCode() === 200;
+        } catch (ClientException $e) {
+            return false;
+        }
+    }
+
+    /**
+     * @throws GuzzleException
+     * @link https://dev.twitch.tv/docs/authentication/revoke-tokens/
+     */
+    public function revokeToken(string $accessToken): ResponseInterface
+    {
+        return $this->makeRequest(
+            new Request('POST', 'revoke'),
+            [
+                RequestOptions::JSON => [
+                    'client_id' => $this->clientId,
+                    'token' => $accessToken,
+                ],
+            ]
+        );
+    }
+
+    /**
+     * Start the device code flow, for input-constrained clients such as consoles and CLIs.
+     *
+     * @throws GuzzleException
+     * @link https://dev.twitch.tv/docs/authentication/getting-tokens-device-code-grant-flow/
+     */
+    public function getDeviceCode(string $scope = ''): ResponseInterface
+    {
+        return $this->makeRequest(
+            new Request('POST', 'device'),
+            [
+                RequestOptions::JSON => [
+                    'client_id' => $this->clientId,
+                    'scopes' => $scope,
+                ],
+            ]
+        );
+    }
+
+    /**
+     * Exchange a device code for a token. Poll this while the user authorises the device;
+     * Twitch answers 400 authorization_pending until they do.
+     *
+     * @throws GuzzleException
+     * @link https://dev.twitch.tv/docs/authentication/getting-tokens-device-code-grant-flow/
+     */
+    public function getDeviceAccessToken(string $deviceCode, string $scope = ''): ResponseInterface
+    {
+        return $this->makeRequest(
+            new Request('POST', 'token'),
+            [
+                RequestOptions::JSON => [
+                    'client_id' => $this->clientId,
+                    'scopes' => $scope,
+                    'device_code' => $deviceCode,
+                    'grant_type' => 'urn:ietf:params:oauth:grant-type:device_code',
+                ],
+            ]
+        );
     }
 
     /**
