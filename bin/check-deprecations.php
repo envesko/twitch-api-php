@@ -51,6 +51,17 @@ set_error_handler(static function (int $severity, string $message, string $file 
     // is edited, which would make the baseline need refreshing after unrelated changes. The
     // count per file carries the same protection against a new occurrence appearing.
     $relative = str_replace('\\', '/', substr(realpath($file) ?: $file, strlen($srcDir) + 1));
+
+    // PHP versions do not word these identically. From 8.4 the engine prefixes the message
+    // with the qualified function it came from, so the same defect reads one way on 8.3 and
+    // another on 8.5, and a baseline recorded on either fails on the other. Drop the prefix:
+    // the file is already part of the identity, and the count catches a new occurrence.
+    $message = preg_replace(
+        '/^[A-Za-z_\x80-\xff][A-Za-z0-9_\x80-\xff\\\\]*(::[A-Za-z0-9_\x80-\xff]+)?\(\):\s*/',
+        '',
+        $message
+    );
+
     $diagnostics[] = sprintf('%s: %s (%s)', $labels[$severity], $message, $relative);
 
     return true;
